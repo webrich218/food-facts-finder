@@ -37,6 +37,20 @@
       min-height: 100vh;
       transition: background 0.3s ease, color 0.3s ease;
     }
+    body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+footer {
+  margin-top: auto;
+  text-align: center;
+  padding: 15px 0;
+  color: #777;
+  font-size: 0.85rem;
+}
+
 
     /* Smooth fade animation when switching themes */
     body.theme-fade {
@@ -225,13 +239,7 @@
       .nutrition-facts { padding: 16px; }
       .calories { font-size: 1.4rem; }
       .nutrient { font-size: 0.9rem; }
-    }
-    footer {
-      text-align: center;
-      margin-top: 30px;
-      font-size: 0.85rem;
-      color: #777;
-    }
+    }   
 
   </style>
 </head>
@@ -395,6 +403,7 @@ Serving Size: ${food.serving_size_g || 100} g
 
 </body>
 </html>
+
 
 
 
