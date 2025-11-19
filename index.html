@@ -387,8 +387,47 @@ Serving Size: ${food.serving_size_g || 100} g
       if (query.length > 2) typingTimer = setTimeout(() => fetchNutrition(query), 600);
     });
   </script>
+  <!-- Unified Footer (Matches legal.html) -->
+<footer style="
+  width: 100%;
+  text-align: center;
+  padding: 30px 0 50px;
+  color: var(--text);
+  background: transparent;
+  font-size: 0.9rem;
+">
+
+  <p style="margin-bottom: 6px;">
+    © 2025 <strong>NutriFind</strong>
+  </p>
+
+  <p style="margin-bottom: 14px;">
+    <a href='legal.html' 
+       style="color: var(--accent); text-decoration: none; font-weight: 600;">
+      About · Privacy · Terms · Contact
+    </a>
+  </p>
+
+  <!-- Dark Mode Toggle (legal.html style) -->
+  <button id="themeToggle" style="
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    padding: 10px 18px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text);
+    transition: 0.3s ease;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.10);
+  ">
+    🌙 Dark Mode
+  </button>
+
+</footer>
+
 </body>
 </html>
+
 
 
 
