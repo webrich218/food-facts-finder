@@ -62,27 +62,29 @@
 
     body.dark p { color: #d1d5db; }
 
-    .theme-toggle {
-      position: fixed;
-      bottom: 18px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 25px;
-      padding: 10px 18px;
-      font-size: 1rem;
-      cursor: pointer;
-      color: var(--text);
-      transition: 0.3s ease;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-      z-index: 10;
-    }
+    /* Sticky dark mode toggle */
+#themeToggle {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 10px 18px;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: var(--text);
+  z-index: 50;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+  transition: 0.3s ease;
+}
 
-    .theme-toggle:hover {
-      background: var(--accent);
-      color: #fff;
-    }
+#themeToggle:hover {
+  background: var(--accent);
+  color: white;
+}
+
 
     .container {
       width: 100%;
@@ -244,16 +246,14 @@
   
   <!-- Minimal Footer with Dark Mode Toggle -->
   <div class="container">
-    <!-- Unified Footer (Matches legal.html) -->
-<footer style="
+    <footer style="
   width: 100%;
   text-align: center;
-  padding: 30px 0 50px;
+  padding: 30px 0 60px;
   color: var(--text);
   background: transparent;
   font-size: 0.9rem;
 ">
-
   <p style="margin-bottom: 6px;">
     © 2025 <strong>NutriFind</strong>
   </p>
@@ -264,23 +264,11 @@
       About · Privacy · Terms · Contact
     </a>
   </p>
-
-  <!-- Dark Mode Toggle (legal.html style) -->
-  <button id="themeToggle" style="
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    padding: 10px 18px;
-    border-radius: 25px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    color: var(--text);
-    transition: 0.3s ease;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.10);
-  ">
-    🌙 Dark Mode
-  </button>
-
 </footer>
+
+<!-- Stuck bottom toggle -->
+<button id="themeToggle">🌙 Dark Mode</button>
+
 
   </div>
 
@@ -397,6 +385,7 @@ Serving Size: ${food.serving_size_g || 100} g
   </script>
 </body>
 </html>
+
 
 
 
