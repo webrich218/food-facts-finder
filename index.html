@@ -4,11 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NutriFind | Nutrition Facts & Calories</title>
-  <meta name="description" content="NutriFind helps you instantly search nutrition facts, calories, macros, and % Daily Values for any food. Copy or share your results easily.">
+  <meta name="description" content="NutriFind helps you instantly search nutrition facts, calories, macros, and serving sizes. Copy or share results easily.">
   <meta name="theme-color" content="#009578">
   <link rel="icon" type="image/png" href="https://twemoji.maxcdn.com/v/latest/72x72/1f957.png" />
-  <link rel="apple-touch-icon" href="https://twemoji.maxcdn.com/v/latest/72x72/1f957.png" />
-
   <style>
     :root {
       --bg: #f9fafb;
@@ -24,7 +22,6 @@
       --border: #374151;
       --card-bg: #1f2937;
     }
-
     body {
       font-family: 'Inter', sans-serif;
       background: var(--bg);
@@ -35,146 +32,51 @@
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
-      transition: background 0.3s ease, color 0.3s ease;
     }
-
-    body.theme-fade {
-      transition: background 0.4s ease, color 0.4s ease, filter 0.4s ease;
-      filter: brightness(1.05);
-    }
-
-    h1 {
-      font-size: 1.9rem;
-      margin-bottom: 6px;
-      font-weight: 700;
-      text-align: center;
-    }
-
-    p {
-      color: #666;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    body.dark p { color: #ccc; }
-
+    h1 { text-align:center; margin-bottom:6px; }
+    p { text-align:center; color:#666; }
+    body.dark p { color:#ccc; }
     #themeToggle {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      padding: 10px 18px;
-      border-radius: 25px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-      z-index: 50;
+      position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+      background:var(--card-bg); border:1px solid var(--border);
+      padding:10px 18px; border-radius:25px; cursor:pointer;
     }
-
-    .container {
-      width: 100%;
-      max-width: 430px;
-      padding: 0 12px;
-    }
-
+    .container { width:100%; max-width:450px; padding:0 12px; }
     input, select {
-      width: 100%;
-      padding: 14px 16px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      margin-bottom: 14px;
-      font-size: 1rem;
-      box-sizing: border-box;
+      width:100%; padding:14px 16px; border-radius:10px;
+      border:1px solid var(--border); margin-bottom:14px;
     }
-
-    select { cursor: pointer; }
-
-    body.dark input, body.dark select {
-      background: #374151;
-      border-color: #4b5563;
-      color: #fff;
-    }
-
+    body.dark input, body.dark select { background:#374151; border-color:#4b5563; color:#fff; }
     .nutrition-facts {
-      background: var(--card-bg);
-      padding: 20px;
-      border-radius: 16px;
-      display: none;
-      box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+      background:var(--card-bg); padding:20px; border-radius:16px;
+      box-shadow:0 2px 15px rgba(0,0,0,0.08); margin-top:20px; display:none;
     }
-
     .nutrition-facts h2 {
-      text-align: center;
-      font-weight: 800;
-      border-bottom: 4px solid var(--accent);
-      padding-bottom: 6px;
-      margin-bottom: 15px;
+      text-align:center; font-weight:800; border-bottom:4px solid var(--accent);
+      padding-bottom:6px;
     }
-
-    .calories {
-      display: flex;
-      justify-content: space-between;
-      font-size: 1.6rem;
-      font-weight: 700;
-      margin-bottom: 10px;
+    .calories { display:flex; justify-content:space-between; font-size:1.6rem; font-weight:700; }
+    .nutrient { display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding:6px 0; }
+    footer { margin-top:40px; text-align:center; font-size:0.85rem; opacity:0.9; }
+    .content-section {
+      max-width:750px;
+      margin-top:50px;
+      line-height:1.6;
     }
-
-    .nutrient {
-      display: flex;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-      padding: 6px 0;
-      font-size: 0.95rem;
-    }
-
-    .footer {
-      margin-top: 15px;
-      font-size: 0.8rem;
-      opacity: 0.8;
-      text-align: center;
-      line-height: 1.4;
-    }
-
-    .buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 15px;
-    }
-
-    .btn {
-      flex: 1;
-      background: var(--accent);
-      border: none;
-      padding: 10px;
-      border-radius: 8px;
-      color: #fff;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .btn-share { background: #444; }
-
-    @media (max-width: 500px) {
-      body { padding: 20px 10px 110px; }
-      .container { padding: 0 8px; }
+    .content-section h2 {
+      margin-top:35px;
+      color:var(--accent);
     }
   </style>
 </head>
-
 <body>
 
 <h1>🥗 NutriFind</h1>
-<p>Instantly look up nutrition facts, calories, macros, and serving sizes.</p>
+<p>Instantly search calories, macros, and nutrition facts.</p>
 
 <div class="container">
-
-  <!-- Search -->
-  <input type="text" id="search" placeholder="e.g. apple, chicken breast, fried rice" />
-
-  <!-- Quantity -->
-  <input type="number" id="qty" value="1" min="1" />
-
-  <!-- Unit Dropdown -->
+  <input type="text" id="search" placeholder="e.g. apple, chicken breast, rice" />
+  <input type="number" id="qty" min="1" value="1" />
   <select id="unit">
     <option value="gram">Grams (g)</option>
     <option value="ml">Milliliters (ml)</option>
@@ -185,228 +87,125 @@
     <option value="oz">Ounce (oz)</option>
   </select>
 
-  <div id="loading" style="display:none;">Fetching data...</div>
+  <div id="loading" style="display:none; text-align:center;">Loading...</div>
   <div id="result" class="nutrition-facts"></div>
 </div>
 
-<!-- Footer -->
-<footer style="margin-top: 40px; text-align: center;">
-  <p>© 2025 NutriFind<br>Nutrition data powered by CalorieNinjas API</p>
-  <a href="legal.html" style="color:var(--accent); font-weight:600;">About · Privacy · Terms · Contact</a>
+<footer>
+  © 2025 NutriFind<br>
+  Nutrition data from CalorieNinjas API<br>
+  <a href="#legal" style="color:var(--accent); font-weight:600;">Legal & Privacy</a>
 </footer>
 
 <button id="themeToggle">🌙 Dark Mode</button>
 
+<div class="content-section">
+  <h2>What is NutriFind?</h2>
+  <p>NutriFind is a fast nutrition checker that lets you search any food and instantly see calories, macros, and nutrition facts. It supports serving sizes like grams, cups, tablespoons, teaspoons, ounces, and pieces.</p>
+
+  <h2>How to Use the Nutrition Calculator</h2>
+  <p>Type any food into the search bar — for example: <strong>egg</strong>, <strong>apple</strong>, <strong>fried rice</strong>, or <strong>chicken breast</strong>. Then choose your desired amount and unit. NutriFind automatically converts the serving size into grams for accurate results.</p>
+
+  <h2 id="legal">Privacy & Terms</h2>
+  <p>NutriFind does not store your personal data. Searches are anonymous and processed only to retrieve nutrition results. By using this site, you agree that the information is for general purposes only and may vary based on preparation, brand, or cooking method.</p>
+</div>
+
 <script>
+const toggle = document.getElementById("themeToggle");
+if (localStorage.getItem("theme") === "dark") {
+  document.body.classList.add("dark");
+  toggle.textContent = "☀️ Light";
+}
+toggle.onclick = () => {
+  document.body.classList.toggle("dark");
+  const d = document.body.classList.contains("dark");
+  toggle.textContent = d ? "☀️ Light" : "🌙 Dark";
+  localStorage.setItem("theme", d ? "dark" : "light");
+};
 
-  /* ----------------------------------------
-     DARK MODE
-  ---------------------------------------- */
-  const themeToggle = document.getElementById("themeToggle");
-  const userPref = localStorage.getItem("theme");
+const lookup = {
+  "apple": { piece: 182 },
+  "banana": { piece: 118 },
+  "egg": { piece: 50 },
+  "rice cooked": { cup: 158 }
+};
 
-  if (userPref === "dark") {
-    document.body.classList.add("dark");
-    themeToggle.textContent = "☀️ Light";
+const search = document.getElementById("search");
+const qty = document.getElementById("qty");
+const unit = document.getElementById("unit");
+const result = document.getElementById("result");
+const loading = document.getElementById("loading");
+let timer;
+
+function convert(name, q, u) {
+  const food = lookup[name.toLowerCase()];
+  const cup = 240, tbsp = 15, tsp = 5, oz = 28.35;
+
+  if (u === "gram" || u === "ml") return q;
+  if (u === "oz") return q * oz;
+
+  if (u === "cup") return food?.cup ? q * food.cup : q * cup;
+  if (u === "tbsp") return q * tbsp;
+  if (u === "tsp") return q * tsp;
+  if (u === "piece") return food?.piece ? q * food.piece : q * 100;
+
+  return q * 100;
+}
+
+search.addEventListener("input", () => {
+  clearTimeout(timer);
+  if (search.value.trim().length < 2) return;
+  timer = setTimeout(() => fetchData(search.value.trim()), 600);
+});
+
+qty.oninput = () => refreshIfVisible();
+unit.onchange = () => refreshIfVisible();
+
+function refreshIfVisible() {
+  if (result.style.display === "block" && window._lastFood) {
+    show(window._lastFood);
   }
+}
 
-  themeToggle.onclick = () => {
-    document.body.classList.toggle("dark");
-    const dark = document.body.classList.contains("dark");
-    themeToggle.textContent = dark ? "☀️ Light" : "🌙 Dark";
-    localStorage.setItem("theme", dark ? "dark" : "light");
-  };
+async function fetchData(q) {
+  loading.style.display = "block";
+  result.style.display = "none";
 
-  /* ----------------------------------------
-     SERVING SIZE LOOKUP TABLE
-  ---------------------------------------- */
-  const weightLookup = {
-    "apple": { piece: 182 },
-    "banana": { piece: 118 },
-    "egg": { piece: 50 },
-    "bread": { piece: 30 },
-    "rice cooked": { cup: 158 },
-    "pasta cooked": { cup: 140 },
-    "chicken breast": { piece: 174 },
-    "potato": { piece: 170 },
-    "carrot": { piece: 61 },
-    "orange": { piece: 130 },
-    "pear": { piece: 178 },
-    "strawberries": { cup: 150 },
-    "blueberries": { cup: 148 },
-    "milk": { cup: 244 },
-    "oats": { cup: 81 },
-    "yogurt": { cup: 245 },
-    "pork chop": { piece: 180 },
-    "salmon": { piece: 180 },
-    "shrimp": { cup: 85 },
-    "beef steak": { piece: 225 },
-    "lettuce": { cup: 55 },
-    "spinach": { cup: 30 },
-    "broccoli": { cup: 90 },
-    "cauliflower": { cup: 100 },
-    "mango": { piece: 200 },
-    "grapes": { cup: 151 },
-    "pineapple": { cup: 165 },
-    "watermelon": { cup: 152 },
-    "cucumber": { piece: 300 },
-    "tomato": { piece: 123 },
-    "onion": { piece: 110 },
-    "cheese": { piece: 28 },
-    "butter": { tbsp: 14 },
-    "oil": { tbsp: 14 },
-    "sugar": { tbsp: 12 },
-    "salt": { tsp: 6 },
-    "peanut butter": { tbsp: 16 },
-    "jam": { tbsp: 20 },
-    "honey": { tbsp: 21 }
-  };
+  const res = await fetch(`/api/nutrition?query=${encodeURIComponent(q)}`);
+  const data = await res.json();
 
-  /* ----------------------------------------
-     FETCH DATA
-  ---------------------------------------- */
-  const searchInput = document.getElementById("search");
-  const qtyInput    = document.getElementById("qty");
-  const unitInput   = document.getElementById("unit");
-  const resultBox   = document.getElementById("result");
-  const loading     = document.getElementById("loading");
-
-  let typingTimer;
-  let lastFoodItem = null;
-
-  searchInput.addEventListener("input", () => {
-    clearTimeout(typingTimer);
-    const query = searchInput.value.trim();
-    if (query.length > 2) {
-      typingTimer = setTimeout(() => fetchNutrition(query), 600);
-    }
-  });
-
-  async function fetchNutrition(foodName) {
-    loading.style.display = "block";
-    resultBox.style.display = "none";
-
-    try {
-      const url = `/api/nutrition?query=${encodeURIComponent(foodName)}`;
-      const res = await fetch(url);
-      const data = await res.json();
-
-      if (!data.items || data.items.length === 0) {
-        resultBox.innerHTML = "<p>No results found.</p>";
-        resultBox.style.display = "block";
-        loading.style.display = "none";
-        return;
-      }
-
-      lastFoodItem = data.items[0];
-      showResult(lastFoodItem);
-    } catch {
-      resultBox.innerHTML = "<p>Error fetching data.</p>";
-      resultBox.style.display = "block";
-    }
-
+  if (!data.items?.length) {
+    result.innerHTML = "<p>No results.</p>";
+    result.style.display = "block";
     loading.style.display = "none";
+    return;
   }
 
-  /* ----------------------------------------
-     UPDATE RESULT WHEN USER CHANGES QTY / UNIT
-  ---------------------------------------- */
-  qtyInput.addEventListener("input", () => {
-    if (lastFoodItem) showResult(lastFoodItem);
-  });
+  const food = data.items[0];
+  window._lastFood = food;
+  show(food);
+  loading.style.display = "none";
+}
 
-  unitInput.addEventListener("change", () => {
-    if (lastFoodItem) showResult(lastFoodItem);
-  });
+function show(food) {
+  const grams = convert(food.name, parseFloat(qty.value), unit.value);
+  const scale = grams / 100;
+  const c = (x) => (x * scale).toFixed(1);
 
-  /* ----------------------------------------
-     NUTRITION RENDERING + CONVERSION
-  ---------------------------------------- */
-
-  function convertToGrams(foodName, qty, unit) {
-    const name = foodName.toLowerCase().trim();
-    const food = weightLookup[name] || null;
-
-    const cup = 240;
-    const tbsp = 15;
-    const tsp = 5;
-    const oz = 28.35;
-
-    if (unit === "gram") return qty;
-    if (unit === "ml") return qty;
-    if (unit === "oz") return qty * oz;
-
-    if (unit === "cup") {
-      if (food?.cup) return qty * food.cup;
-      return qty * cup;
-    }
-    if (unit === "tbsp") {
-      if (food?.tbsp) return qty * food.tbsp;
-      return qty * tbsp;
-    }
-    if (unit === "tsp") {
-      if (food?.tsp) return qty * food.tsp;
-      return qty * tsp;
-    }
-    if (unit === "piece") {
-      if (food?.piece) return qty * food.piece;
-      return qty * 100;
-    }
-
-    return qty * 100;
-  }
-
-  function showResult(food) {
-    const qty = parseFloat(qtyInput.value) || 1;
-    const unit = unitInput.value;
-
-    const grams = convertToGrams(food.name, qty, unit);
-    const scale = grams / 100;
-
-    const c = (v) => (v * scale).toFixed(1);
-
-    resultBox.style.display = "block";
-    resultBox.innerHTML = `
-      <h2>Nutrition Facts</h2>
-      <div class="food-title">${food.name.toUpperCase()}</div>
-
-      <div class="calories">
-        <span>Calories</span>
-        <span>${c(food.calories)}</span>
-      </div>
-
-      <div class="nutrient"><span>Total Fat</span> <span>${c(food.fat_total_g)} g</span></div>
-      <div class="nutrient"><span>Cholesterol</span> <span>${c(food.cholesterol_mg)} mg</span></div>
-      <div class="nutrient"><span>Sodium</span> <span>${c(food.sodium_mg)} mg</span></div>
-      <div class="nutrient"><span>Total Carbs</span> <span>${c(food.carbohydrates_total_g)} g</span></div>
-      <div class="nutrient"><span>Fiber</span> <span>${c(food.fiber_g)} g</span></div>
-      <div class="nutrient"><span>Sugars</span> <span>${c(food.sugar_g)} g</span></div>
-      <div class="nutrient"><span>Protein</span> <span>${c(food.protein_g)} g</span></div>
-
-      <div class="footer">
-        Serving Size: ${qty} ${unit} → ${grams} g
-      </div>
-
-      <div class="buttons">
-        <button class="btn" onclick="copyNutrition()">📋 Copy</button>
-        <button class="btn btn-share" onclick="shareNutrition()">🔗 Share</button>
-      </div>
-    `;
-  }
-
-  function copyNutrition() {
-    navigator.clipboard.writeText(document.getElementById("result").innerText);
-    alert("Copied!");
-  }
-
-  function shareNutrition() {
-    const text = document.getElementById("result").innerText;
-    if (navigator.share) navigator.share({ text });
-    else alert("Sharing not supported");
-  }
-
+  result.style.display = "block";
+  result.innerHTML = `
+    <h2>Nutrition Facts</h2>
+    <div class="calories"><span>Calories</span><span>${c(food.calories)}</span></div>
+    <div class="nutrient"><span>Fat</span><span>${c(food.fat_total_g)} g</span></div>
+    <div class="nutrient"><span>Sodium</span><span>${c(food.sodium_mg)} mg</span></div>
+    <div class="nutrient"><span>Carbs</span><span>${c(food.carbohydrates_total_g)} g</span></div>
+    <div class="nutrient"><span>Fiber</span><span>${c(food.fiber_g)} g</span></div>
+    <div class="nutrient"><span>Sugar</span><span>${c(food.sugar_g)} g</span></div>
+    <div class="nutrient"><span>Protein</span><span>${c(food.protein_g)} g</span></div>
+    <p style="margin-top:10px; font-size:0.9rem; opacity:0.8;">Serving: ${qty.value} ${unit.value} → ${grams} g</p>
+  `;
+}
 </script>
 
 </body>
 </html>
-
