@@ -3,204 +3,186 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NutriFind — Nutrition Calculator</title>
+<title>NutriFind — Recipe Nutrition Calculator</title>
 
 <style>
-:root {
-  --bg: #ffffff;
-  --text: #111;
-  --card-bg: #f9f9f9;
-  --border: #e0e0e0;
-  --accent: #2e7d32;
+:root{
+  --bg:#ffffff;
+  --text:#111;
+  --card:#f9f9f9;
+  --border:#ddd;
+  --accent:#2e7d32;
 }
-body.dark {
-  --bg: #1e1e1e;
-  --text: #f0f0f0;
-  --card-bg: #2a2a2a;
-  --border: #444;
-  --accent: #7dd48e;
+body.dark{
+  --bg:#1b1b1b;
+  --text:#eee;
+  --card:#2b2b2b;
+  --border:#444;
+  --accent:#7ee693;
 }
-
-body {
-  font-family: Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  margin: 0;
-  padding: 20px;
-  transition: 0.3s;
-}
-
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial, sans-serif;
+  margin:0;
+  padding:20px;
+  transition:0.3s;
 }
 
-#themeToggle {
-  background: transparent;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
+header{text-align:center;}
+header img{width:48px;}
+
+.container{max-width:760px;margin:auto;padding:10px 0;}
+.ingredient-row{display:flex;gap:10px;margin-bottom:8px;}
+input,select{
+  padding:10px;border:1px solid var(--border);
+  border-radius:6px;flex:1;background:var(--card);color:var(--text);
+}
+.add-btn,.calc-btn{
+  background:var(--accent);
+  color:white;border:none;padding:10px 14px;
+  border-radius:6px;cursor:pointer;margin-top:10px;
 }
 
-.intro {
-  font-size: 14px;
-  margin-bottom: 10px;
-  opacity: 0.8;
+.nutrition-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  padding:20px;border-radius:12px;margin-top:25px;
+  text-align:center;
 }
 
-input, button {
-  padding: 10px;
-  font-size: 14px;
-  margin-top: 5px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  width: 100%;
+table{width:100%;border-collapse:collapse;margin-top:15px;}
+td{padding:10px 0;border-bottom:1px solid var(--border);}
+td:last-child{text-align:right;font-weight:bold;}
+
+.share-buttons{margin-top:18px;display:flex;gap:10px;justify-content:center;}
+.copy-btn{
+  background:#222;border:none;color:#fff;cursor:pointer;
+  padding:8px 12px;border-radius:6px;
 }
 
-button {
-  background: var(--accent);
-  color: white;
-  cursor: pointer;
+/* Floating dark mode toggle */
+#themeToggle{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:var(--accent);
+  color:white;
+  border:none;
+  font-size:18px;
+  border-radius:50%;
+  width:45px;
+  height:45px;
+  cursor:pointer;
 }
-
-.nutrition-card {
-  background: var(--card-bg);
-  padding: 20px;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  margin-top: 20px;
-  text-align: center;
-}
-
-.divider {
-  border: none;
-  height: 3px;
-  background: var(--accent);
-  margin: 10px 0 15px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 15px;
-}
-
-td {
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-  text-align: left;
-}
-
-td.value {
-  font-weight: bold;
-  text-align: right;
-}
-
-.serving-note {
-  font-size: 12px;
-  opacity: 0.7;
-  margin-top: 5px;
-}
-
-.copy-btn {
-  width: auto;
-  margin-top: 10px;
-}
-
-.hidden { display: none; }
 </style>
 
 </head>
 <body>
 
 <header>
-  <h1>NutriFind</h1>
-  <button id="themeToggle">🌙</button>
+  <h1>NutriFind Recipe Calculator</h1>
 </header>
 
-<main>
-  <section>
-    <p class="intro">
-      Calculate calories & macros based on food ingredients or recipes.
-      Track your intake and improve your nutrition awareness.
-    </p>
+<div class="container">
+  <p>Enter ingredients and amounts to calculate total calories & macros.</p>
 
-    <input type="text" id="foodInput" placeholder="Search food or ingredient..." />
-    <button id="searchBtn">Analyze Nutrition</button>
-  </section>
+  <div id="ingredientsContainer"></div>
 
-  <section id="resultsSection" class="hidden">
-    <div class="nutrition-card">
-      <h2>Nutrition Facts</h2>
-      <hr class="divider" />
-      <table id="nutritionTable"></table>
-      <p class="serving-note">Serving: 100 g → approx. 100 g</p>
-      <button id="copyBtn" class="copy-btn">Copy Nutrition Facts</button>
+  <button class="add-btn" onclick="addIngredient()">+ Add Ingredient</button>
+  <button class="calc-btn" onclick="calculateRecipe()">Calculate Nutrition</button>
+
+  <div id="resultsCard" style="display:none;" class="nutrition-card">
+    <h2>Nutrition Facts</h2>
+    <table id="nutritionTable"></table>
+    <div class="share-buttons">
+      <button class="copy-btn" onclick="copyTable()">Copy</button>
+      <button class="copy-btn" onclick="shareTable()">Share</button>
     </div>
-  </section>
-</main>
+  </div>
+</div>
+
+<button id="themeToggle">🌙</button>
 
 <script>
-// === Theme Toggle ===
-const themeToggle = document.getElementById("themeToggle");
-
-if (localStorage.getItem("theme") === "dark") {
+/* Dark mode toggle w/ emoji */
+const toggleBtn=document.getElementById("themeToggle");
+if(localStorage.getItem("theme")==="dark"){
   document.body.classList.add("dark");
-  themeToggle.textContent = "☀️";
+  toggleBtn.textContent="☀️";
+}
+toggleBtn.onclick=()=>{
+  document.body.classList.toggle("dark");
+  const dark=document.body.classList.contains("dark");
+  toggleBtn.textContent=dark?"☀️":"🌙";
+  localStorage.setItem("theme", dark?"dark":"light");
+};
+
+/* Ingredient rows */
+function ingredientRowHTML(){
+ return `
+  <div class="ingredient-row">
+    <input type="text" class="food" placeholder="Ingredient">
+    <input type="number" class="amount" placeholder="Amount" value="100">
+    <select class="unit">
+      <option value="g">g</option>
+      <option value="cup">cup</option>
+      <option value="tbsp">tbsp</option>
+      <option value="tsp">tsp</option>
+      <option value="piece">piece</option>
+    </select>
+    <button onclick="this.parentElement.remove()">✕</button>
+  </div>`;
+}
+function addIngredient(){
+ document.getElementById("ingredientsContainer")
+   .insertAdjacentHTML("beforeend", ingredientRowHTML());
+}
+addIngredient(); // default row
+
+/* API fetch via Vercel */
+async function getNutrition(q){
+  const res=await fetch(`/api/nutrition?query=${encodeURIComponent(q)}`);
+  return await res.json();
 }
 
-themeToggle.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-  const dark = document.body.classList.contains("dark");
-  themeToggle.textContent = dark ? "☀️" : "🌙";
-  localStorage.setItem("theme", dark ? "dark" : "light");
-});
-
-
-// === Nutrition Fetch Logic ===
-const searchBtn = document.getElementById("searchBtn");
-const foodInput  = document.getElementById("foodInput");
-const resultsSection = document.getElementById("resultsSection");
-const nutritionTable = document.getElementById("nutritionTable");
-const copyBtn = document.getElementById("copyBtn");
-
-searchBtn.addEventListener("click", async () => {
-  const food = foodInput.value.trim();
-  if (!food) return;
-
-  const res = await fetch(`/api/nutrition?query=${encodeURIComponent(food)}`);
-  const data = await res.json();
-
-  if (!data.items || data.items.length === 0) {
-    nutritionTable.innerHTML = "<tr><td>No result found</td></tr>";
-    resultsSection.classList.remove("hidden");
-    return;
+/* Total calculation */
+async function calculateRecipe(){
+  const rows=document.querySelectorAll(".ingredient-row");
+  let totals={cal:0,fat:0,carb:0,protein:0};
+  for(const row of rows){
+    const food=row.querySelector(".food").value.trim();
+    const amt=row.querySelector(".amount").value;
+    const unit=row.querySelector(".unit").value;
+    if(!food) continue;
+    const query=`${amt}${unit} ${food}`;
+    const data=await getNutrition(query);
+    if(!data.items || !data.items.length) continue;
+    const item=data.items[0];
+    totals.cal += item.calories||0;
+    totals.fat += item.fat_total_g||0;
+    totals.carb += item.carbohydrates_total_g||0;
+    totals.protein += item.protein_g||0;
   }
+  document.getElementById("resultsCard").style.display="block";
+  document.getElementById("nutritionTable").innerHTML=`
+    <tr><td>Calories</td><td>${Math.round(totals.cal)}</td></tr>
+    <tr><td>Fat</td><td>${totals.fat.toFixed(1)} g</td></tr>
+    <tr><td>Carbs</td><td>${totals.carb.toFixed(1)} g</td></tr>
+    <tr><td>Protein</td><td>${totals.protein.toFixed(1)} g</td></tr>`;
+}
 
-  const item = data.items[0];
-
-  nutritionTable.innerHTML = `
-    <tr><td><strong>Calories</strong></td><td class="value">${item.calories}</td></tr>
-    <tr><td>Fat</td><td class="value">${item.fat_total_g} g</td></tr>
-    <tr><td>Sodium</td><td class="value">${item.sodium_mg} mg</td></tr>
-    <tr><td>Carbs</td><td class="value">${item.carbohydrates_total_g} g</td></tr>
-    <tr><td>Fiber</td><td class="value">${item.fiber_g} g</td></tr>
-    <tr><td>Sugar</td><td class="value">${item.sugar_g} g</td></tr>
-    <tr><td>Protein</td><td class="value">${item.protein_g} g</td></tr>
-  `;
-
-  resultsSection.classList.remove("hidden");
-});
-
-// === Copy table data ===
-copyBtn.addEventListener("click", () => {
-  const text = nutritionTable.innerText.replace(/\s+/g, " ").trim();
-  navigator.clipboard.writeText(text);
-
-  copyBtn.textContent = "Copied!";
-  setTimeout(() => (copyBtn.textContent = "Copy Nutrition Facts"), 1200);
-});
+/* Copy + share */
+function copyTable(){
+  const txt=document.getElementById("nutritionTable").innerText;
+  navigator.clipboard.writeText(txt);
+  alert("Copied!");
+}
+async function shareTable(){
+  const txt=document.getElementById("nutritionTable").innerText;
+  if(navigator.share){await navigator.share({text:txt});}
+  else alert("Sharing not supported here.");
+}
 </script>
 
 </body>
