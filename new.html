@@ -133,6 +133,23 @@
             padding-bottom: 1.5rem;
             border-top: 1px solid var(--border-color);
         }
+        
+        /* Custom Loading Spinner */
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center">
@@ -149,8 +166,8 @@
             <div id="ingredientsContainer"></div>
             
             <div class="flex flex-wrap gap-3 mt-4">
-                <button class="add-btn flex-grow md:flex-grow-0 py-2 px-4 text-sm font-medium rounded-lg" onclick="addIngredient()">+ Add Ingredient</button>
-                <button class="calc-btn flex-grow py-2 px-4 text-lg font-bold rounded-lg" onclick="calculateRecipe()">Calculate Nutrition</button>
+                <button class="add-btn flex-grow md:flex-grow-0 py-2 px-4 text-sm font-medium rounded-lg text-white" onclick="addIngredient()">+ Add Ingredient</button>
+                <button id="calculateBtn" class="calc-btn flex-grow py-2 px-4 text-lg font-bold rounded-lg text-white" onclick="calculateRecipe()">Calculate Nutrition</button>
             </div>
         </div>
 
@@ -171,8 +188,8 @@
             </div>
 
             <div class="share-buttons flex gap-3 mt-4">
-                <button class="copy-btn flex-grow py-2 px-4 font-medium rounded-lg text-sm" onclick="copyTable()">Copy Nutrition Table</button>
-                <button class="share-btn flex-grow py-2 px-4 font-medium rounded-lg text-sm" onclick="shareTable()">Share Results</button>
+                <button class="copy-btn flex-grow py-2 px-4 font-medium rounded-lg text-sm text-white" onclick="copyTable()">Copy Nutrition Table</button>
+                <button class="share-btn flex-grow py-2 px-4 font-medium rounded-lg text-sm text-white" onclick="shareTable()">Share Results</button>
             </div>
         </div>
 
@@ -215,7 +232,7 @@
     </button>
 
     <footer class="sticky bottom-0 bg-white p-4 w-full text-center text-xs text-gray-500 border-t border-gray-200 mt-auto">
-        NutriFind © 2025 · Data provided by CalorieNinja API.
+        NutriFind © 2025 · Data provided by CalorieNinja API (using Gemini API for live analysis).
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
@@ -280,25 +297,75 @@
             document.getElementById('ingredientsContainer').insertAdjacentHTML('beforeend', ingredientRowHTML());
         }
 
-        // --- API CALL ---
+        // --- API CALL (Updated to use Gemini for Canvas compatibility) ---
         async function getNutrition(query) {
-            // Using exponential backoff for retries
+            const systemPrompt = `You are an expert food and nutrition analyzer. Based on the user's food query (including quantity and unit, e.g., "1 cup flour" or "100g chicken breast"), you must respond with a JSON array containing a single item with its nutritional breakdown. Use Google Search for the most accurate, current data. All values must be numerical. If a value cannot be found, use 0.`;
+            const userQuery = `Analyze the nutritional content for: ${query}.`;
+
+            const apiKey = ""; // Canvas provides this dynamically
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+            // Define the strict schema for structured output
+            const responseSchema = {
+                type: "ARRAY",
+                items: {
+                    type: "OBJECT",
+                    properties: {
+                        "name": { "type": "STRING", "description": "The name of the analyzed food item." },
+                        "calories": { "type": "NUMBER", "description": "Total calories (kcal)." },
+                        "fat_total_g": { "type": "NUMBER", "description": "Total fat in grams." },
+                        "carbohydrates_total_g": { "type": "NUMBER", "description": "Total carbohydrates in grams." },
+                        "protein_g": { "type": "NUMBER", "description": "Total protein in grams." },
+                        "sodium_mg": { "type": "NUMBER", "description": "Total sodium in milligrams (mg)." },
+                        "fiber_g": { "type": "NUMBER", "description": "Total dietary fiber in grams." },
+                        "sugar_g": { "type": "NUMBER", "description": "Total sugar in grams." }
+                    },
+                    required: ["name", "calories", "fat_total_g", "carbohydrates_total_g", "protein_g", "sodium_mg", "fiber_g", "sugar_g"]
+                }
+            };
+            
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                tools: [{ "google_search": {} }], // Use search for grounding/accuracy
+                systemInstruction: { parts: [{ text: systemPrompt }] },
+                generationConfig: {
+                    responseMimeType: "application/json",
+                    responseSchema: responseSchema
+                }
+            };
+
             const maxRetries = 3;
             let currentRetry = 0;
             
             while (currentRetry < maxRetries) {
                 try {
-                    // Call the secure Vercel proxy endpoint
-                    const res = await fetch(`/api/nutrition?query=${encodeURIComponent(query)}`);
+                    const res = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
                     if (!res.ok) {
                         throw new Error(`HTTP error! status: ${res.status}`);
                     }
-                    return await res.json();
+                    
+                    const result = await res.json();
+                    
+                    // The JSON part is returned as a string that needs to be parsed
+                    const jsonPart = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                    if (jsonPart) {
+                        return { items: JSON.parse(jsonPart) };
+                    } else {
+                        console.warn("Gemini returned empty or malformed JSON structure.");
+                        return { items: [] };
+                    }
+
                 } catch (error) {
                     currentRetry++;
                     if (currentRetry >= maxRetries) {
-                        console.error("Error fetching nutrition data from API proxy after retries:", error);
-                        return { items: [] }; // Return empty data on final failure
+                        console.error("Error fetching nutrition data from Gemini API after retries:", error);
+                        return { items: [] };
                     }
                     // Wait with exponential backoff before retrying
                     const delay = Math.pow(2, currentRetry) * 1000;
@@ -316,9 +383,9 @@
             let successfulLookups = 0;
 
             // Simple loading indicator on the button
-            const calcBtn = document.querySelector('.calc-btn');
-            const originalText = calcBtn.textContent;
-            calcBtn.textContent = 'Calculating...';
+            const calcBtn = document.getElementById('calculateBtn');
+            const originalText = calcBtn.innerHTML;
+            calcBtn.innerHTML = '<span class="spinner"></span>Calculating...';
             calcBtn.disabled = true;
 
             for (const row of rows) {
@@ -326,20 +393,21 @@
                 const amt = row.querySelector('.amount').value;
                 const unit = row.querySelector('.unit').value;
                 
-                if (!food || amt <= 0) continue;
+                // Validate input
+                const parsedAmt = parseFloat(amt);
+                if (!food || isNaN(parsedAmt) || parsedAmt <= 0) continue;
                 
-                // CalorieNinja handles the quantity and unit in the query string
-                const query = `${amt}${unit} ${food}`;
+                // The API query combines amount, unit, and food name
+                const query = `${parsedAmt}${unit} ${food}`; 
                 const data = await getNutrition(query);
 
                 if (data.items && data.items.length) {
                     const item = data.items[0];
-                    // CalorieNinja uses a single item array for a single query
+                    // Aggregate totals from the structured response
                     totals.cal += item.calories || 0;
                     totals.fat += item.fat_total_g || 0;
                     totals.carb += item.carbohydrates_total_g || 0;
                     totals.protein += item.protein_g || 0;
-                    // Assuming CalorieNinja API returns these fields (common for full nutrition APIs)
                     totals.sodium += item.sodium_mg || 0;
                     totals.fiber += item.fiber_g || 0;
                     totals.sugar += item.sugar_g || 0; 
@@ -349,13 +417,13 @@
                 }
             }
             
-            calcBtn.textContent = originalText;
+            // Restore button state
+            calcBtn.innerHTML = originalText;
             calcBtn.disabled = false;
             
             if (successfulLookups === 0) {
                 document.getElementById('resultsCard').style.display = 'none';
-                // Using a console error, as per instructions to avoid alerts.
-                console.error("No ingredients were successfully analyzed. Please check your spelling.");
+                console.error("No ingredients were successfully analyzed. Please check your spelling and try again.");
                 return;
             }
 
