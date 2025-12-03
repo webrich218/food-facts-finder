@@ -3,18 +3,72 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NutriFind – Recipe Nutrition Calculator</title>
+    
+    <!-- Favicon (Salad Emoji) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥗</text></svg>">
+    
+    <!-- SEO & Metadata -->
+    <title>🥗 NutriFind: Accurate Recipe Nutrition Calculator | Calorie and Macro Counter</title>
+    <meta name="description" content="Calculate detailed nutrition facts (calories, fat, carbs, protein, fiber, sugar, sodium) for any recipe ingredient list using natural language processing." />
+    <meta name="keywords" content="nutrition calculator, recipe analyzer, macro counter, calorie counter, food ingredients, diet planning, CalorieNinja" />
+    
+    <!-- Open Graph (for social sharing previews) -->
+    <meta property="og:title" content="NutriFind: Accurate Recipe Nutrition Calculator" />
+    <meta property="og:description" content="Calculate detailed nutrition facts (calories, fat, carbs, protein, fiber, sugar, sodium) for any recipe ingredient list using natural language processing." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="YOUR_LIVE_URL_HERE" />
+    <!-- Replace with a thumbnail image for your app -->
+    <meta property="og:image" content="https://placehold.co/1200x630/0a7c36/ffffff?text=NutriFind+Calculator" /> 
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Tailwind configuration for custom colors/font */
+        /* --- Theme Variables --- */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
         :root {
+            /* Light Theme Defaults */
             --primary: #0a7c36;
-            --secondary: #f4f7f8;
-            --accent: #222;
+            --background: #f4f7f8;
+            --text-color: #222;
+            --card-bg: white;
+            --border-color: #e5e7eb;
+            --accent: #222; /* Nutrition label line/border color */
         }
-        body { font-family: 'Inter', sans-serif; background: var(--secondary); }
+        
+        .dark {
+            /* Dark Theme Overrides */
+            --background: #1f2937;
+            --text-color: #f3f4f6;
+            --card-bg: #374151;
+            --border-color: #4b5563;
+            --accent: #f3f4f6;
+        }
+
+        /* --- Global Styles using Variables --- */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--background);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background-color 0.3s;
+        }
         .calc-btn, .add-btn { transition: background-color 0.2s; }
+        
+        /* Apply card backgrounds and borders */
+        header { background: var(--card-bg); }
+        .bg-white { background-color: var(--card-bg) !important; }
+        .border-gray-100, .border-gray-200 { border-color: var(--border-color); }
+        .text-gray-800, .text-gray-700, .text-gray-500 { color: var(--text-color) !important; }
+        
+        /* Input/Select Colors */
+        input, select {
+            background-color: var(--background);
+            color: var(--text-color);
+            border-color: var(--border-color);
+            transition: background-color 0.3s, border-color 0.3s;
+        }
 
         /* Custom Nutrition Label Styling */
         .nutrition-label {
@@ -22,7 +76,8 @@
             border: 2px solid var(--accent);
             padding: 5px 15px;
             margin-top: 20px;
-            background: white;
+            background: var(--card-bg);
+            transition: border-color 0.3s, background-color 0.3s;
         }
         .label-header { 
             font-size: 28px; 
@@ -30,8 +85,15 @@
             margin: 5px 0 0;
             padding-bottom: 5px;
             border-bottom: 10px solid var(--accent); 
+            transition: border-color 0.3s;
         }
-        .line { padding: 4px 0; border-bottom: 1px solid var(--accent); overflow: hidden; font-size: 14px; }
+        .line { 
+            padding: 4px 0; 
+            border-bottom: 1px solid var(--accent); 
+            overflow: hidden; 
+            font-size: 14px; 
+            transition: border-color 0.3s;
+        }
         .line span { float: right; font-weight: bold; }
         .line.thick { border-bottom-width: 3px; }
         .line.no-border { border-bottom: none; }
@@ -43,11 +105,31 @@
         .calc-btn, .share-btn, .add-btn { background-color: var(--primary); }
         .calc-btn:hover, .share-btn:hover, .add-btn:hover { background-color: #08662a; }
 
+        /* --- Theme Toggle Button --- */
+        .theme-toggle-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        .theme-toggle-btn:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center">
     <header class="text-center p-6 bg-white w-full shadow-md">
-        <h1 class="text-3xl font-extrabold text-gray-800">NutriFind Recipe Calculator</h1>
+        <h1 class="text-3xl font-extrabold text-gray-800">🥗 NutriFind Recipe Calculator</h1>
         <p class="text-sm text-gray-500 mt-1">Analyze the nutrition of your recipes using natural language.</p>
     </header>
     
@@ -87,17 +169,53 @@
         </div>
     </div>
     
+    <!-- Theme Toggle Button -->
+    <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle dark mode" onclick="toggleTheme()">
+        <!-- Initial content set by JavaScript -->
+    </button>
+
     <footer class="sticky bottom-0 bg-white p-4 w-full text-center text-xs text-gray-500 border-t border-gray-200 mt-auto">
         NutriFind © 2025 · Powered by CalorieNinjas API.
-        <br>
-        <span class="text-red-500">Note: This calculator requires a Vercel/Node.js backend for the `/api/nutrition` endpoint to function.</span>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
     <script>
-        // Set up the initial ingredient row on load
+        
+        // --- THEME TOGGLE LOGIC ---
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const themeToggle = document.getElementById('themeToggle');
+
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.body.classList.add('dark');
+                themeToggle.textContent = '🌙';
+            } else {
+                themeToggle.textContent = '☀️';
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.getElementById('themeToggle');
+            
+            if (body.classList.contains('dark')) {
+                body.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                themeToggle.textContent = '☀️';
+            } else {
+                body.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                themeToggle.textContent = '🌙';
+            }
+        }
+        // --- END THEME TOGGLE LOGIC ---
+
+
+        // Set up the initial ingredient row and theme on load
         document.addEventListener('DOMContentLoaded', () => {
             addIngredient();
+            initializeTheme();
         });
 
         function ingredientRowHTML() {
@@ -124,16 +242,28 @@
 
         // --- API CALL ---
         async function getNutrition(query) {
-            try {
-                // Call the secure Vercel proxy endpoint
-                const res = await fetch(`/api/nutrition?query=${encodeURIComponent(query)}`);
-                if (!res.ok) {
-                    throw new Error(`HTTP error! status: ${res.status}`);
+            // Using exponential backoff for retries
+            const maxRetries = 3;
+            let currentRetry = 0;
+            
+            while (currentRetry < maxRetries) {
+                try {
+                    // Call the secure Vercel proxy endpoint
+                    const res = await fetch(`/api/nutrition?query=${encodeURIComponent(query)}`);
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return await res.json();
+                } catch (error) {
+                    currentRetry++;
+                    if (currentRetry >= maxRetries) {
+                        console.error("Error fetching nutrition data from API proxy after retries:", error);
+                        return { items: [] }; // Return empty data on final failure
+                    }
+                    // Wait with exponential backoff before retrying
+                    const delay = Math.pow(2, currentRetry) * 1000;
+                    await new Promise(resolve => setTimeout(resolve, delay));
                 }
-                return await res.json();
-            } catch (error) {
-                console.error("Error fetching nutrition data from API proxy:", error);
-                return { items: [] }; // Return empty data on failure
             }
         }
 
@@ -147,6 +277,7 @@
 
             // Simple loading indicator on the button
             const calcBtn = document.querySelector('.calc-btn');
+            const originalText = calcBtn.textContent;
             calcBtn.textContent = 'Calculating...';
             calcBtn.disabled = true;
 
@@ -178,12 +309,13 @@
                 }
             }
             
-            calcBtn.textContent = 'Calculate Nutrition';
+            calcBtn.textContent = originalText;
             calcBtn.disabled = false;
             
             if (successfulLookups === 0) {
                 document.getElementById('resultsCard').style.display = 'none';
-                alert("No ingredients were successfully analyzed. Please check your spelling.");
+                // Using a console error, as per instructions to avoid alerts.
+                console.error("No ingredients were successfully analyzed. Please check your spelling.");
                 return;
             }
 
@@ -209,7 +341,7 @@
                 <div class="line thick font-bold text-base">
                     Total Fat <span>${formatG(totals.fat)}</span>
                 </div>
-                <div class="line">
+                <div class="line indent">
                     Saturated Fat <span>0 g</span>
                 </div>
                 <div class="line thick font-bold text-base">
@@ -250,7 +382,7 @@
                         backgroundColor: pastelColors,
                         hoverOffset: 15,
                         borderWidth: 2,
-                        borderColor: '#ffffff',
+                        borderColor: 'var(--card-bg)', // Use card-bg variable for border
                     }]
                 },
                 options: {
@@ -259,6 +391,7 @@
                         legend: {
                             position: 'bottom',
                             labels: {
+                                color: 'var(--text-color)', // Use text-color variable
                                 // Add percentage to legend labels
                                 generateLabels: (chart) => {
                                     const data = chart.data;
@@ -283,6 +416,7 @@
                         title: {
                             display: true,
                             text: 'Macronutrient Split (by weight in grams)',
+                            color: 'var(--text-color)', // Use text-color variable
                             font: { size: 14, weight: 'bold' }
                         },
                         tooltip: {
@@ -304,9 +438,19 @@
         // --- UTILITIES ---
         function copyTable() { 
             const tableText = "Nutrition Facts\n" + document.getElementById("nutritionTable").innerText;
-            navigator.clipboard.writeText(tableText)
-                .then(() => alert("Nutrition facts copied to clipboard!"))
-                .catch(err => console.error('Could not copy text: ', err));
+            // Use document.execCommand('copy') for better compatibility in iframe environments
+            try {
+                const textarea = document.createElement('textarea');
+                textarea.value = tableText;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                // Custom alert replacement
+                console.log("Nutrition facts copied to clipboard!"); 
+            } catch (err) {
+                console.error('Could not copy text: ', err);
+            }
         }
 
         async function shareTable() { 
@@ -317,7 +461,8 @@
                     text: tableText 
                 }); 
             } else { 
-                alert("Sharing not supported on this browser. Use the Copy button instead."); 
+                // Custom alert replacement
+                console.log("Sharing not supported on this browser. Use the Copy button instead."); 
             }
         }
     </script>
