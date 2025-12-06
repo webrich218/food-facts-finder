@@ -8,7 +8,7 @@
     
     <title>NutriFind: Accurate Recipe Nutrition Calculator | Calorie and Macro Counter</title>
     <meta name="description" content="Calculate detailed nutrition facts (calories, fat, carbs, protein, fiber, sugar, sodium, saturated fat) for any recipe ingredient list using natural language processing. Includes a kitchen unit conversion tool." />
-    <meta name="author" content="[Nutrifind]" />
+    <meta name="author" content="[NutriFind]" />
     <meta property="og:title" content="NutriFind: Accurate Recipe Nutrition Calculator" />
     <meta property="og:description" content="Calculate detailed nutrition facts for any recipe. Includes macro tracking and a kitchen unit conversion tool." />
     <meta property="og:type" content="website" />
@@ -19,6 +19,8 @@
         crossorigin="anonymous"></script>
         
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
         /* --- Theme Variables --- */
@@ -646,7 +648,7 @@
             resultDisplay.textContent = `${amount.toFixed(2)} ${fromUnitLabel} = ${result.toFixed(2)} ${toUnitLabel}`;
         }
         
-        // --- COPY & SHARE UTILITIES (Revised CopyTable only for URL/Title) ---
+        // --- COPY & SHARE UTILITIES ---
         function copyIngredients() {
             const rows = document.querySelectorAll('.ingredient-row');
             let ingredientsList = [];
@@ -701,35 +703,67 @@
             } catch (err) { console.error('Could not copy text: ', err); }
         }
 
-        // --- UTILITY: Share Table (REVISED to use simplified format) ---
+        // --- UTILITY: Share Table (REVISED TO IMAGE SHARING) ---
         async function shareTable() { 
             if (!window.lastCalculatedTotals) {
                 alert("Please calculate the recipe nutrition before sharing.");
                 return;
             }
-            
-            const t = window.lastCalculatedTotals;
-            
-            // Generate the clean, templated text using the required format
-            const shareBody = `Check out my recipe nutrition facts from ${WEBSITE_TITLE}:\n\n` +
-                              `Calories - ${Math.round(t.cal)}\n` +
-                              `Total Fat - ${t.fat.toFixed(1)} g\n` +
-                              `Saturated Fat - ${t.sat_fat.toFixed(1)} g\n` +
-                              `Sodium - ${Math.round(t.sodium)} mg\n` +
-                              `Total Carbohydrate - ${t.carb.toFixed(1)} g\n` +
-                              `Dietary Fiber - ${t.fiber.toFixed(1)} g\n` +
-                              `Total Sugars - ${t.sugar.toFixed(1)} g\n` +
-                              `Protein - ${t.protein.toFixed(1)} g\n\n` +
-                              `Calculate your own instantly. Visit ${WEBSITE_URL}`;
 
-            if (navigator.share) { 
-                await navigator.share({ 
-                    title: `${WEBSITE_TITLE} Results`, 
-                    text: shareBody,
-                    url: WEBSITE_URL // This makes nutrifind.fit a clickable rich link preview
-                }); 
-            } else { 
-                alert(`Sharing not supported. Please use the 'Copy Nutrition Table' button or visit ${WEBSITE_URL}`); 
+            const resultsCard = document.getElementById('resultsCard');
+            
+            // Temporarily hide the share/copy/save buttons within the card before capturing the image
+            const buttonsDiv = document.querySelector('.share-buttons');
+            buttonsDiv.style.display = 'none';
+
+            try {
+                // Use html2canvas to capture the results card content
+                const canvas = await html2canvas(resultsCard, {
+                    scale: 2, // Use a higher scale for better resolution on high-density screens
+                    backgroundColor: getComputedStyle(resultsCard).backgroundColor, // Maintain card background
+                    // Important: Exclude the macro chart element from the capture since it uses canvas, which often causes issues
+                    ignoreElements: (element) => {
+                        return element.id === 'macroChart';
+                    }
+                });
+
+                // Convert canvas to a Blob (a file-like object)
+                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                
+                // Create a File from the Blob
+                const file = new File([blob], 'NutriFind_Recipe.png', { type: 'image/png' });
+
+                // Generate the text to accompany the shared image
+                const shareText = `Check out my recipe nutrition facts! Calculate your own instantly. Visit ${WEBSITE_URL}`;
+
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    // Share the file and the text/url
+                    await navigator.share({
+                        files: [file],
+                        title: `${WEBSITE_TITLE} Results`,
+                        text: shareText,
+                        url: WEBSITE_URL
+                    });
+                } else if (navigator.share) {
+                    // Fallback for sharing text and URL if file sharing is not supported
+                    await navigator.share({
+                        title: `${WEBSITE_TITLE} Results`,
+                        text: shareText,
+                        url: WEBSITE_URL
+                    });
+                    alert("File sharing not supported on this device/browser. Sharing text link instead.");
+                } else {
+                    // General fallback
+                    alert(`Sharing not supported. Use the 'Copy Nutrition Table' button or visit ${WEBSITE_URL}`); 
+                }
+
+            } catch (error) {
+                console.error('Error during image creation and sharing:', error);
+                alert('Could not generate image for sharing. Please use the "Copy Nutrition Table" button.');
+            } finally {
+                // Ensure the buttons are visible again regardless of success or failure
+                buttonsDiv.style.display = 'flex'; // Restore button visibility
+                // Note: Macro chart is ignored during capture but remains visible on page
             }
         }
     </script>
