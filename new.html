@@ -725,20 +725,20 @@
                               `Total Sugars - ${t.sugar.toFixed(1)} g\n` +
                               `Protein - ${t.protein.toFixed(1)} g`;
 
-            //if (navigator.share) { 
-                //try {
-                    //await navigator.share({ 
-                       // title: `${WEBSITE_TITLE} Results`, 
-                       // text: shareBody,
-                        // The URL is only included here to trigger a rich link preview
-                      //  url: WEBSITE_URL 
-                  //  });
-               // } catch (error) {
-               //     console.error('Sharing failed or cancelled:', error);
-              //  }
-           // } else { 
-              //  alert(`Sharing not supported. Please use the 'Copy Nutrition Table' button or visit ${WEBSITE_URL}`); 
-           // }
+            if (navigator.share) { 
+                try {
+                    await navigator.share({ 
+                        title: `${WEBSITE_TITLE} Results`, 
+                        text: shareBody,
+                         The URL is only included here to trigger a rich link preview
+                        url: WEBSITE_URL 
+                    });
+                } catch (error) {
+                    console.error('Sharing failed or cancelled:', error);
+                }
+           } else { 
+                alert(`Sharing not supported. Please use the 'Copy Nutrition Table' button or visit ${WEBSITE_URL}`); 
+            }
         }
     </script>
 </body>
