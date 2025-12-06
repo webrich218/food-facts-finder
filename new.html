@@ -705,7 +705,7 @@
             } catch (err) { console.error('Could not copy text: ', err); }
         }
 
-        // --- UTILITY: Share Table (FINAL STABLE: TEXT-ONLY, TARGETING EXACT CHAT LAYOUT) ---
+        // --- UTILITY: Share Table (FINAL STABLE: TEXT-ONLY, CLEAN LINE BREAK) ---
         async function shareTable() { 
             if (!window.lastCalculatedTotals) {
                 alert("Please calculate the recipe nutrition before sharing.");
@@ -714,18 +714,18 @@
             
             const t = window.lastCalculatedTotals;
             
-            // 1. Generate the clean, templated text.
-            // Note: The structure below closely matches your successful screenshot
-            // by using minimal line breaks between the descriptive line and the data.
-            const shareBody = `Check out my recipe nutrition facts from ${WEBSITE_TITLE}: ${WEBSITE_URL}\n` +
-                              `Calories - ${Math.round(t.cal)}\n` +
+            // 1. Generate the clean, templated text. The URL is NOT included here.
+            // A double line break (\n\n) is added after the Protein line for separation.
+            const shareBody = `Check out my recipe nutrition facts from NutriFind.\n\n` +
+                              `*Calories - ${Math.round(t.cal)}*\n` +
                               `Total Fat - ${t.fat.toFixed(1)} g\n` +
                               `Saturated Fat - ${t.sat_fat.toFixed(1)} g\n` +
                               `Sodium - ${Math.round(t.sodium)} mg\n` +
                               `Total Carbohydrate - ${t.carb.toFixed(1)} g\n` +
                               `Dietary Fiber - ${t.fiber.toFixed(1)} g\n` +
                               `Total Sugars - ${t.sugar.toFixed(1)} g\n` +
-                              `Protein - ${t.protein.toFixed(1)} g`;
+                              `Protein - ${t.protein.toFixed(1)} g\n\n` +
+                              `Check it out!`; // <-- Final line break added here
 
             if (navigator.share) { 
                 try {
