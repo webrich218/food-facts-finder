@@ -706,40 +706,43 @@
         }
 
         // --- UTILITY: Share Table (FINAL STABLE: TEXT-ONLY, ENGAGING CTA) ---
-        async function shareTable() { 
-            if (!window.lastCalculatedTotals) {
-                alert("Please calculate the recipe nutrition before sharing.");
-                return;
-            }
-            
-            const t = window.lastCalculatedTotals;
-            
-            // 1. Generate the clean, templated text. 
-            const shareBody = `Check out my recipe nutrition facts from ${WEBSITE_TITLE}.\n\n` +
-                              `*Calories - ${Math.round(t.cal)}*\n` +
-                              `Total Fat - ${t.fat.toFixed(1)} g\n` +
-                              `Saturated Fat - ${t.sat_fat.toFixed(1)} g\n` +
-                              `Sodium - ${Math.round(t.sodium)} mg\n` +
-                              `Total Carbohydrate - ${t.carb.toFixed(1)} g\n` +
-                              `Dietary Fiber - ${t.fiber.toFixed(1)} g\n` +
-                              `Total Sugars - ${t.sugar.toFixed(1)} g\n` +
-                              `Protein - ${t.protein.toFixed(1)} g\n\n` + 
-                              `Get started on your own recipes! Visit `; // <-- Final Phrase
+async function shareTable() { 
+    if (!window.lastCalculatedTotals) {
+        alert("Please calculate the recipe nutrition before sharing.");
+        return;
+    }
+    
+    const t = window.lastCalculatedTotals;
+    
+    // 1. Generate the clean, templated text. 
+    // The explicit URL is excluded from the text body to prevent duplication.
+    const shareBody = `Check out my recipe nutrition facts from ${WEBSITE_TITLE}.\n\n` +
+                      `*Calories - ${Math.round(t.cal)}*\n` +
+                      `Total Fat - ${t.fat.toFixed(1)} g\n` +
+                      `Saturated Fat - ${t.sat_fat.toFixed(1)} g\n` +
+                      `Sodium - ${Math.round(t.sodium)} mg\n` +
+                      `Total Carbohydrate - ${t.carb.toFixed(1)} g\n` +
+                      `Dietary Fiber - ${t.fiber.toFixed(1)} g\n` +
+                      `Total Sugars - ${t.sugar.toFixed(1)} g\n` +
+                      `Protein - ${t.protein.toFixed(1)} g\n\n` + 
+                      `Get started on your own recipes! Visit nutrifind.fit`; // <-- Your final, clean CTA text
 
-            if (navigator.share) { 
-                try {
-                    await navigator.share({ 
-                        title: `${WEBSITE_TITLE} Results`, 
-                        text: shareBody,
-                        url: WEBSITE_URL 
-                    });
-                } catch (error) {
-                    console.error('Sharing failed or cancelled:', error);
-                }
-            } else { 
-                alert(`Sharing not supported. Please use the 'Copy Nutrition Table' button or visit ${WEBSITE_URL}`); 
-            }
+    if (navigator.share) { 
+        try {
+            await navigator.share({ 
+                title: `${WEBSITE_TITLE} Results`, 
+                text: shareBody,
+                // The URL is included here to trigger the Rich Link Preview box at the top.
+                url: WEBSITE_URL 
+            });
+        } catch (error) {
+            console.error('Sharing failed or cancelled:', error);
         }
+    } else { 
+        alert(`Sharing not supported. Please use the 'Copy Nutrition Table' button or visit ${WEBSITE_URL}`); 
+    }
+}
     </script>
 </body>
 </html>
+
