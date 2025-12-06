@@ -717,9 +717,8 @@
             const buttonsDiv = document.querySelector('.share-buttons');
             buttonsDiv.style.display = 'none';
 
-            // 2. Define the content of the accompanying text (must include URL)
-            const t = window.lastCalculatedTotals;
-            const shareText = `Check out my recipe nutrition facts from ${WEBSITE_TITLE} (Calories: ${Math.round(t.cal)}, Protein: ${t.protein.toFixed(1)}g). Calculate your own: ${WEBSITE_URL}`;
+            // 2. Define the content of the accompanying text (MUST be simple and include the URL)
+            const shareText = `Check out my recipe nutrition facts from ${WEBSITE_TITLE}. ${WEBSITE_URL}`;
 
 
             try {
@@ -740,8 +739,8 @@
                     await navigator.share({
                         files: [file],
                         title: `${WEBSITE_TITLE} Results`,
-                        text: shareText, // Crucial for including the descriptive text and link
-                        url: WEBSITE_URL // Crucial for rich link preview
+                        text: shareText, // Includes the full website title and URL
+                        url: WEBSITE_URL // The dedicated rich link preview URL
                     });
                 } else if (navigator.share) {
                     // Fallback: Share Text and URL only
