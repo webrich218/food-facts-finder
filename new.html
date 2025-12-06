@@ -4,23 +4,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Favicon (Salad Emoji) -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥗</text></svg>">
     
-    <!-- SEO & Metadata -->
     <title>NutriFind: Accurate Recipe Nutrition Calculator | Calorie and Macro Counter</title>
-    <meta name="description" content="Calculate detailed nutrition facts (calories, fat, carbs, protein, fiber, sugar, sodium) for any recipe ingredient list using natural language processing." />
-    <meta name="keywords" content="nutrition calculator, recipe analyzer, macro counter, calorie counter, food ingredients, diet planning, CalorieNinja, recipe nutrition facts, accurate calorie count" />
+    <meta name="description" content="Calculate detailed nutrition facts (calories, fat, carbs, protein, fiber, sugar, sodium, saturated fat) for any recipe ingredient list using natural language processing." />
+    <meta name="author" content="[Your Name or Company Name]" /> <meta name="keywords" content="nutrition calculator, recipe analyzer, macro counter, calorie counter, food ingredients, diet planning, CalorieNinja, recipe nutrition facts, accurate calorie count" />
     
-    <!-- Open Graph (for social sharing previews) -->
     <meta property="og:title" content="NutriFind: Accurate Recipe Nutrition Calculator" />
     <meta property="og:description" content="Calculate detailed nutrition facts (calories, fat, carbs, protein, fiber, sugar, sodium) for any recipe ingredient list using natural language processing." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="YOUR_LIVE_URL_HERE" />
-    <!-- Replace with a thumbnail image for your app -->
-    <meta property="og:image" content="https://placehold.co/1200x630/0a7c36/ffffff?text=NutriFind+Calculator" /> 
+    <meta property="og:url" content="/" /> <meta property="og:image" content="https://placehold.co/1200x630/0a7c36/ffffff?text=NutriFind+Calculator" />
     
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2553227651137870"
+        crossorigin="anonymous"></script>
+        
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <style>
         /* --- Theme Variables --- */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
@@ -63,7 +62,7 @@
         /* Fix for dark mode readability: All shades of gray text use the light text color in dark mode */
         .text-gray-800, .text-gray-700, .text-gray-600, .text-gray-500 { color: var(--text-color) !important; }
         
-        /* Input/Select Colors */
+        /* Input Colors */
         input, select {
             background-color: var(--background);
             color: var(--text-color);
@@ -103,7 +102,10 @@
         /* Custom Styles for Buttons */
         .copy-btn { background-color: var(--accent); }
         .copy-btn:hover { background-color: #555; }
-        .calc-btn, .share-btn, .add-btn { background-color: var(--primary); }
+        .calc-btn, .share-btn, .add-btn { 
+            background-color: var(--primary); 
+            color: white; /* Ensure text is white for primary button contrast */
+        }
         .calc-btn:hover, .share-btn:hover, .add-btn:hover { background-color: #08662a; }
 
         /* --- Theme Toggle Button --- */
@@ -133,23 +135,6 @@
             padding-bottom: 1.5rem;
             border-top: 1px solid var(--border-color);
         }
-        
-        /* Custom Loading Spinner */
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-            margin-right: 8px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center">
@@ -160,65 +145,61 @@
     
     <div class="container p-4 w-full max-w-2xl">
         
-        <!-- Ingredient Input Card -->
         <div class="bg-white p-6 rounded-xl shadow-lg mb-6 border border-gray-100">
             <h2 class="text-xl font-semibold mb-4 text-gray-700">Recipe Ingredients</h2>
+            <div id="error-message" class="hidden p-3 mb-4 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm" role="alert">
+                <span class="font-bold">Error:</span> No valid ingredients were successfully analyzed. Please check your query format (e.g., "1 cup flour" or "100g chicken breast").
+            </div>
+            
             <div id="ingredientsContainer"></div>
             
             <div class="flex flex-wrap gap-3 mt-4">
-                <button class="add-btn flex-grow md:flex-grow-0 py-2 px-4 text-sm font-medium rounded-lg text-white" onclick="addIngredient()">+ Add Ingredient</button>
-                <button id="calculateBtn" class="calc-btn flex-grow py-2 px-4 text-lg font-bold rounded-lg text-white" onclick="calculateRecipe()">Calculate Nutrition</button>
+                <button class="add-btn flex-grow md:flex-grow-0 py-2 px-4 text-sm font-medium rounded-lg" onclick="addIngredient()">+ Add Ingredient</button>
+                <button class="calc-btn flex-grow py-2 px-4 text-lg font-bold rounded-lg" onclick="calculateRecipe()">Calculate Nutrition</button>
             </div>
         </div>
 
-        <!-- Results Card -->
         <div id="resultsCard" class="bg-white p-6 rounded-xl shadow-lg border border-gray-100" style="display:none;">
-            <h2 class="text-xl font-semibold mb-4 text-gray-700">Results Summary</h2>
+            <h2 class="text-xl font-semibold mb-4 text-gray-700">Results Summary (Total Recipe)</h2>
 
-            <!-- Nutrition Label Table -->
             <div class="nutrition-label">
                 <h3 class="label-header">Nutrition Facts</h3>
                 <div id="nutritionTable"></div>
             </div>
 
-            <!-- Macro Chart -->
             <div class="mt-8">
                 <h3 class="text-lg font-semibold mb-3 text-gray-700">Macronutrient Breakdown (by weight)</h3>
                 <canvas id="macroChart" class="rounded-lg border p-4"></canvas>
             </div>
 
             <div class="share-buttons flex gap-3 mt-4">
-                <button class="copy-btn flex-grow py-2 px-4 font-medium rounded-lg text-sm text-white" onclick="copyTable()">Copy Nutrition Table</button>
-                <button class="share-btn flex-grow py-2 px-4 font-medium rounded-lg text-sm text-white" onclick="shareTable()">Share Results</button>
+                <button class="share-btn flex-grow py-2 px-4 font-medium rounded-lg text-sm" onclick="copyTable()">Copy Nutrition Table</button>
+                <button class="share-btn flex-grow py-2 px-4 font-medium rounded-lg text-sm" onclick="shareTable()">Share Results</button>
             </div>
         </div>
 
-        <!-- About & Info Sections -->
         <div class="bg-white p-6 rounded-xl shadow-lg mt-6 border border-gray-100">
             
-            <!-- 1. What is NutriFind? -->
             <div class="info-section">
-                <h2 class="text-xl font-semibold text-gray-700 mb-3">What is NutriFind?</h2>
+                <h2 class="text-xl font-semibold text-gray-700 mb-3">What is NutriFind? - Your Accurate Recipe Analyzer</h2>
                 <p class="text-sm text-gray-600 leading-relaxed">
-                    <b>NutriFind</b> is your powerful, free <b>recipe nutrition calculator</b> designed to simplify diet planning and tracking macros. We use advanced <b>natural language processing (NLP)</b> to accurately analyze the <b>calorie count</b>, <b>macro distribution (protein, fat, carbs)</b>, and full <b>nutrition facts</b> for any list of ingredients you provide. Whether you're meal prepping, managing a specific diet, or just curious about your favorite recipes, NutriFind offers a quick and <b>accurate calorie counter</b> solution, making it the essential <b>recipe analyzer</b> for home cooks and fitness enthusiasts alike.
+                    <b>NutriFind</b> is your powerful, free <b>recipe nutrition calculator</b> designed to simplify diet planning and tracking macros. We use advanced <b>natural language processing (NLP)</b> to accurately analyze the **calorie count**, **macro distribution (protein, fat, carbs)**, and full **nutrition facts** for any list of ingredients you provide, including detailed data for **saturated fat** and **sodium**. Whether you're meal prepping, managing a specific diet, or just curious about your favorite recipes, NutriFind offers a quick and **accurate calorie counter** solution, making it the essential **recipe analyzer** for home cooks and fitness enthusiasts alike.
                 </p>
             </div>
             
-            <!-- 2. How to Use the Recipe Calculator -->
             <div class="info-section">
                 <h2 class="text-xl font-semibold text-gray-700 mb-3">How to Use the Recipe Calculator</h2>
                 <p class="text-sm text-gray-600 leading-relaxed">
-                    Using NutriFind is simple. In the "Recipe Ingredients" section above, enter each ingredient on a new line. Be sure to specify the quantity and unit (e.g., "300g chicken breast", "1 tbsp olive oil", or "1 cup flour"). Our system handles complex measurements and unit conversions automatically. Once your ingredient list is complete, click the <b>"Calculate Nutrition"</b> button to instantly generate a detailed Nutrition Facts label and a graphical macronutrient breakdown chart for your entire recipe.
+                    Using NutriFind is simple. In the "Recipe Ingredients" section above, enter each ingredient on a new line. **Be sure to specify the quantity and unit** (e.g., "300g chicken breast", "1 tbsp olive oil", or "1 cup flour"). Our system handles complex measurements, including **volume (ml, l)** and **weight (g, oz)**, and unit conversions automatically. Once your ingredient list is complete, click the **"Calculate Nutrition"** button to instantly generate a detailed Nutrition Facts label and a graphical macronutrient breakdown chart for your entire recipe.
                 </p>
             </div>
             
-            <!-- 3. Privacy & Terms -->
             <div class="info-section border-b-0">
-                <h2 class="text-xl font-semibold text-gray-700 mb-3">Privacy & Terms</h2>
+                <h2 class="text-xl font-semibold text-gray-700 mb-3">Privacy, Terms & Health Disclaimer</h2>
                 <p class="text-xs text-gray-500 leading-relaxed">
                     <b>Data Privacy:</b> At NutriFind, your privacy is paramount. We are committed to an anonymous experience; <b>we do not store or process any personal data.</b> Ingredient searches and calculations are anonymous and are processed solely to retrieve accurate nutrition results.
                     <br><br>
-                    <b>Disclaimer:</b> By using this site, you acknowledge and agree that the nutrition information provided is for general informational and educational purposes only. The results are calculated based on a comprehensive database but may vary significantly based on specific product brands, preparation methods (e.g., frying vs. baking), and variations in ingredient sourcing. Always consult a medical or diet professional for personalized advice.
+                    <b>Health Disclaimer (IMPORTANT):</b> By using this site, you acknowledge and agree that the nutrition information provided is for general informational and educational purposes only. The results are calculated based on a comprehensive database but may vary significantly based on specific product brands, preparation methods (e.g., frying vs. baking), and variations in ingredient sourcing. **This tool is not a substitute for professional medical or diet advice.** Always consult a qualified professional for personalized health guidance.
                 </p>
             </div>
 
@@ -226,19 +207,18 @@
 
     </div>
     
-    <!-- Theme Toggle Button -->
     <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle dark mode" onclick="toggleTheme()">
-        <!-- Initial content set by JavaScript -->
-    </button>
+        </button>
 
     <footer class="sticky bottom-0 bg-white p-4 w-full text-center text-xs text-gray-500 border-t border-gray-200 mt-auto">
-        NutriFind © 2025 · Data provided by CalorieNinja API (using Gemini API for live analysis).
+        NutriFind © 2025 · Data provided by CalorieNinja API.
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    
     <script>
         
-        // --- THEME TOGGLE LOGIC ---
+        // --- THEME TOGGLE LOGIC (Unchanged) ---
         function initializeTheme() {
             const savedTheme = localStorage.getItem('theme');
             const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -269,27 +249,15 @@
         // --- END THEME TOGGLE LOGIC ---
 
 
-        // Set up the initial ingredient row and theme on load
-        document.addEventListener('DOMContentLoaded', () => {
-            addIngredient();
-            initializeTheme();
-        });
-
+        // --- INGREDIENT ROW LOGIC (Revised for single query input) ---
         function ingredientRowHTML() {
             return `
             <div class="ingredient-row flex gap-2 mb-2">
-                <input type="text" class="food w-full p-2 border border-gray-300 rounded-lg text-sm" placeholder="e.g., Chicken breast" />
-                <input type="number" class="amount p-2 border border-gray-300 rounded-lg w-20 text-sm" placeholder="Amount" value="100" min="0.1" />
-                <select class="unit p-2 border border-gray-300 rounded-lg text-sm w-20">
-                    <option value="g">g</option>
-                    <option value="mg">mg</option>
-                    <option value="oz">oz</option>
-                    <option value="cup">cup</option>
-                    <option value="tbsp">tbsp</option>
-                    <option value="tsp">tsp</option>
-                    <option value="piece">pc</option>
-                </select>
-                <button class="bg-red-500 text-white rounded-lg p-2 text-sm hover:bg-red-600 w-10 flex-shrink-0" onclick="this.parentElement.remove()">✕</button>
+                <input type="text" class="query w-full p-2 border border-gray-300 rounded-lg text-sm" 
+                       placeholder="e.g., 100g chicken breast or 2 liters water" 
+                       value="" />
+                <button class="bg-red-500 text-white rounded-lg p-2 text-sm hover:bg-red-600 w-10 flex-shrink-0" 
+                        onclick="this.parentElement.remove()">✕</button>
             </div>`;
         }
 
@@ -297,75 +265,33 @@
             document.getElementById('ingredientsContainer').insertAdjacentHTML('beforeend', ingredientRowHTML());
         }
 
-        // --- API CALL (Updated to use Gemini for Canvas compatibility) ---
+        // Set up the initial ingredient row and theme on load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add a single starting row
+            if (document.getElementById('ingredientsContainer').children.length === 0) {
+                 document.getElementById('ingredientsContainer').insertAdjacentHTML('beforeend', ingredientRowHTML());
+            }
+            initializeTheme();
+        });
+
+        // --- API CALL (Unchanged, includes retry logic) ---
         async function getNutrition(query) {
-            const systemPrompt = `You are an expert food and nutrition analyzer. Based on the user's food query (including quantity and unit, e.g., "1 cup flour" or "100g chicken breast"), you must respond with a JSON array containing a single item with its nutritional breakdown. Use Google Search for the most accurate, current data. All values must be numerical. If a value cannot be found, use 0.`;
-            const userQuery = `Analyze the nutritional content for: ${query}.`;
-
-            const apiKey = ""; // Canvas provides this dynamically
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-
-            // Define the strict schema for structured output
-            const responseSchema = {
-                type: "ARRAY",
-                items: {
-                    type: "OBJECT",
-                    properties: {
-                        "name": { "type": "STRING", "description": "The name of the analyzed food item." },
-                        "calories": { "type": "NUMBER", "description": "Total calories (kcal)." },
-                        "fat_total_g": { "type": "NUMBER", "description": "Total fat in grams." },
-                        "carbohydrates_total_g": { "type": "NUMBER", "description": "Total carbohydrates in grams." },
-                        "protein_g": { "type": "NUMBER", "description": "Total protein in grams." },
-                        "sodium_mg": { "type": "NUMBER", "description": "Total sodium in milligrams (mg)." },
-                        "fiber_g": { "type": "NUMBER", "description": "Total dietary fiber in grams." },
-                        "sugar_g": { "type": "NUMBER", "description": "Total sugar in grams." }
-                    },
-                    required: ["name", "calories", "fat_total_g", "carbohydrates_total_g", "protein_g", "sodium_mg", "fiber_g", "sugar_g"]
-                }
-            };
-            
-            const payload = {
-                contents: [{ parts: [{ text: userQuery }] }],
-                tools: [{ "google_search": {} }], // Use search for grounding/accuracy
-                systemInstruction: { parts: [{ text: systemPrompt }] },
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    responseSchema: responseSchema
-                }
-            };
-
             const maxRetries = 3;
             let currentRetry = 0;
             
             while (currentRetry < maxRetries) {
                 try {
-                    const res = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
+                    // Call the secure Vercel proxy endpoint
+                    const res = await fetch(`/api/nutrition?query=${encodeURIComponent(query)}`);
                     if (!res.ok) {
                         throw new Error(`HTTP error! status: ${res.status}`);
                     }
-                    
-                    const result = await res.json();
-                    
-                    // The JSON part is returned as a string that needs to be parsed
-                    const jsonPart = result.candidates?.[0]?.content?.parts?.[0]?.text;
-
-                    if (jsonPart) {
-                        return { items: JSON.parse(jsonPart) };
-                    } else {
-                        console.warn("Gemini returned empty or malformed JSON structure.");
-                        return { items: [] };
-                    }
-
+                    return await res.json();
                 } catch (error) {
                     currentRetry++;
                     if (currentRetry >= maxRetries) {
-                        console.error("Error fetching nutrition data from Gemini API after retries:", error);
-                        return { items: [] };
+                        console.error("Error fetching nutrition data from API proxy after retries:", error);
+                        return { items: [] }; // Return empty data on final failure
                     }
                     // Wait with exponential backoff before retrying
                     const delay = Math.pow(2, currentRetry) * 1000;
@@ -376,54 +302,64 @@
 
         let macroChartInstance = null;
 
-        // --- MAIN CALCULATION ---
+        // --- MAIN CALCULATION (Revised for single input and sat_fat) ---
         async function calculateRecipe() {
             const rows = document.querySelectorAll('.ingredient-row');
-            let totals = { cal: 0, fat: 0, carb: 0, protein: 0, sodium: 0, fiber: 0, sugar: 0 };
+            let totals = { 
+                cal: 0, 
+                fat: 0, 
+                carb: 0, 
+                protein: 0, 
+                sodium: 0, 
+                fiber: 0, 
+                sugar: 0,
+                sat_fat: 0 // ADDED: Saturated Fat tracking
+            };
             let successfulLookups = 0;
+            document.getElementById('error-message').style.display = 'none'; // Hide error initially
 
             // Simple loading indicator on the button
-            const calcBtn = document.getElementById('calculateBtn');
-            const originalText = calcBtn.innerHTML;
-            calcBtn.innerHTML = '<span class="spinner"></span>Calculating...';
+            const calcBtn = document.querySelector('.calc-btn');
+            const originalText = calcBtn.textContent;
+            calcBtn.textContent = 'Calculating...';
             calcBtn.disabled = true;
 
             for (const row of rows) {
-                const food = row.querySelector('.food').value.trim();
-                const amt = row.querySelector('.amount').value;
-                const unit = row.querySelector('.unit').value;
+                const queryInput = row.querySelector('.query');
+                if (!queryInput) continue;
                 
-                // Validate input
-                const parsedAmt = parseFloat(amt);
-                if (!food || isNaN(parsedAmt) || parsedAmt <= 0) continue;
+                const query = queryInput.value.trim();
                 
-                // The API query combines amount, unit, and food name
-                const query = `${parsedAmt}${unit} ${food}`; 
+                // Input validation (must be at least 3 characters to be a valid food query)
+                if (!query || query.length < 3) continue; 
+                
                 const data = await getNutrition(query);
 
                 if (data.items && data.items.length) {
                     const item = data.items[0];
-                    // Aggregate totals from the structured response
+                    // Summing up totals (using || 0 for safety)
                     totals.cal += item.calories || 0;
                     totals.fat += item.fat_total_g || 0;
+                    totals.sat_fat += item.fat_saturated_g || 0; // NEW: Capturing Saturated Fat
                     totals.carb += item.carbohydrates_total_g || 0;
                     totals.protein += item.protein_g || 0;
                     totals.sodium += item.sodium_mg || 0;
                     totals.fiber += item.fiber_g || 0;
-                    totals.sugar += item.sugar_g || 0; 
+                    totals.sugar += item.sugar_g || 0;
+                    
                     successfulLookups++;
                 } else {
                     console.warn(`Could not find nutrition data for: ${query}`);
                 }
             }
             
-            // Restore button state
-            calcBtn.innerHTML = originalText;
+            calcBtn.textContent = originalText;
             calcBtn.disabled = false;
             
             if (successfulLookups === 0) {
                 document.getElementById('resultsCard').style.display = 'none';
-                console.error("No ingredients were successfully analyzed. Please check your spelling and try again.");
+                document.getElementById('error-message').style.display = 'block'; // Show error message to user
+                console.error("No valid ingredients were successfully analyzed. Please check your query format (e.g., '1 cup flour').");
                 return;
             }
 
@@ -432,7 +368,7 @@
             updateMacroChart(totals);
         }
 
-        // --- UPDATE TABLE ---
+        // --- UPDATE TABLE (Revised for sat_fat) ---
         function updateNutritionTable(totals) {
             const tableBody = document.getElementById('nutritionTable');
 
@@ -450,7 +386,7 @@
                     Total Fat <span>${formatG(totals.fat)}</span>
                 </div>
                 <div class="line indent">
-                    Saturated Fat <span>0 g</span>
+                    Saturated Fat <span>${formatG(totals.sat_fat)}</span> 
                 </div>
                 <div class="line thick font-bold text-base">
                     Sodium <span>${formatMG(totals.sodium)}</span>
@@ -470,7 +406,7 @@
             `;
         }
 
-        // --- UPDATE CHART ---
+        // --- UPDATE CHART (Unchanged) ---
         function updateMacroChart(totals) {
             const ctx = document.getElementById("macroChart").getContext("2d");
             if (macroChartInstance) macroChartInstance.destroy();
@@ -482,7 +418,7 @@
             const pastelColors = ["#FFC3A0", "#C6E2FF", "#D7FFC6"]; 
 
             macroChartInstance = new Chart(ctx, {
-                type: "doughnut", // Changed to Donut style
+                type: "doughnut",
                 data: {
                     labels: ["Fat (g)", "Carbs (g)", "Protein (g)"],
                     datasets: [{
@@ -490,7 +426,7 @@
                         backgroundColor: pastelColors,
                         hoverOffset: 15,
                         borderWidth: 2,
-                        borderColor: 'var(--card-bg)', // Use card-bg variable for border
+                        borderColor: 'var(--card-bg)',
                     }]
                 },
                 options: {
@@ -499,7 +435,7 @@
                         legend: {
                             position: 'bottom',
                             labels: {
-                                color: 'var(--text-color)', // Use text-color variable
+                                color: 'var(--text-color)',
                                 // Add percentage to legend labels
                                 generateLabels: (chart) => {
                                     const data = chart.data;
@@ -524,7 +460,7 @@
                         title: {
                             display: true,
                             text: 'Macronutrient Split (by weight in grams)',
-                            color: 'var(--text-color)', // Use text-color variable
+                            color: 'var(--text-color)',
                             font: { size: 14, weight: 'bold' }
                         },
                         tooltip: {
@@ -543,10 +479,9 @@
             });
         }
 
-        // --- UTILITIES ---
+        // --- UTILITIES (Unchanged) ---
         function copyTable() { 
             const tableText = "Nutrition Facts\n" + document.getElementById("nutritionTable").innerText;
-            // Use document.execCommand('copy') for better compatibility in iframe environments
             try {
                 const textarea = document.createElement('textarea');
                 textarea.value = tableText;
@@ -554,7 +489,6 @@
                 textarea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textarea);
-                // Custom alert replacement
                 console.log("Nutrition facts copied to clipboard!"); 
             } catch (err) {
                 console.error('Could not copy text: ', err);
@@ -569,7 +503,6 @@
                     text: tableText 
                 }); 
             } else { 
-                // Custom alert replacement
                 console.log("Sharing not supported on this browser. Use the Copy button instead."); 
             }
         }
