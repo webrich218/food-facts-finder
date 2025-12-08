@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥗</text></svg>">
+    
+    <title>About NutriFind | Our Mission & Data Sources</title>
+    <meta name="description" content="Learn about NutriFind's mission to provide accurate recipe nutrition facts, the technology we use (NLP), and our commitment to user privacy." />
+    <meta name="author" content="NutriFind" />
+    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2553227651137870"
+        crossorigin="anonymous"></script>
+        
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="style.css"> 
+
+</head>
+<body class="min-h-screen flex flex-col items-center">
+    
+    <header class="text-center p-6 bg-white w-full shadow-md">
+        <h1 class="text-3xl font-extrabold text-gray-800">🥗 NutriFind Recipe Calculator</h1>
+        <p class="text-sm text-gray-500 mt-1"><a href="index.html" class="text-green-600 hover:underline">Go back to the Calculator</a></p>
+    </header>
+    
+    <div class="container p-4 w-full max-w-2xl flex-grow">
+        
+        <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100 mt-6">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">About NutriFind</h2>
+            
+            <section class="mb-8">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Our Mission: Simplifying Nutrition</h3>
+                <p class="text-base text-gray-600 leading-relaxed">
+                    NutriFind was founded with a single goal: to make detailed, accurate nutrition analysis accessible to everyone, regardless of their cooking skill. We understand that tracking calories, macros, and specific micronutrients in home-cooked meals is challenging. Our mission is to bridge the gap between cooking and dietary planning, ensuring you get transparent information without complicated interfaces or manual searching.
+                </p>
+            </section>
+            
+            <section class="mb-8">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Technology and Data Sources</h3>
+                <p class="text-base text-gray-600 leading-relaxed mb-4">
+                    Our calculator is powered by **Natural Language Processing (NLP)**, which allows you to input ingredients exactly as you would write them in a recipe—e.g., "1.5 cups flour" or "200g salmon."
+                </p>
+                <ul class="list-disc list-inside text-base text-gray-600 space-y-2 ml-4">
+                    <li>
+                        <strong>Data Aggregation:</strong> We utilize the **CalorieNinja API** as our primary data source, which aggregates nutritional data from comprehensive databases, including the official USDA FoodData Central. This provides broad and reliable coverage for thousands of ingredients.
+                    </li>
+                    <li>
+                        <strong>Unit Handling:</strong> The platform automatically handles complex kitchen unit conversions (volume to volume, weight to weight) to deliver accurate totals for the entire recipe.
+                    </li>
+                </ul>
+            </section>
+
+            <section class="mb-8">
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Privacy and Transparency</h3>
+                <p class="text-base text-gray-600 leading-relaxed">
+                    NutriFind is committed to user privacy. We do not collect, store, or transmit any personally identifiable information (PII). All saved recipes are stored **exclusively in your browser's Local Storage** and never leave your device. For more details on compliance, please visit our <a href="index.html#privacy" class="text-green-600 hover:underline font-medium">Privacy Policy and Health Disclaimer</a> on the main calculator page.
+                </p>
+            </section>
+            
+            <section>
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">Get In Touch</h3>
+                <p class="text-base text-gray-600 leading-relaxed">
+                    For support, feedback, or business inquiries, please contact us at: 
+                    <a href="mailto:support@nutrifind.fit" class="text-green-600 hover:underline font-medium">support@nutrifind.fit</a>
+                </p>
+            </section>
+
+        </div>
+        
+    </div>
+    
+    <button id="themeToggle" class="theme-toggle-btn" aria-label="Toggle dark mode" onclick="toggleTheme()"></button>
+
+    <footer class="sticky bottom-0 bg-white p-4 w-full text-center text-xs text-gray-500 border-t border-gray-200 mt-auto">
+        NutriFind © 2025 · Data provided by CalorieNinja API.
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Initialize theme on this page as well
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof initializeTheme === 'function') {
+                initializeTheme();
+            }
+            if (document.getElementById('themeToggle')) {
+                 // Set initial icon based on theme
+                 const isDark = document.body.classList.contains('dark');
+                 document.getElementById('themeToggle').textContent = isDark ? '🌙' : '☀️';
+            }
+        });
+    </script>
+</body>
+</html>
