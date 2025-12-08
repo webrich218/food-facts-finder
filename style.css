@@ -31,19 +31,20 @@ body {
     transition: background-color 0.3s;
 }
 
-header { background: var(--card-bg); }
-.border-gray-100, .border-gray-200 { border-color: var(--border-color); }
+header { background: var(--card-bg);
+}
 
-/* --- FIX: Text Readability in Dark Mode --- */
-/* This rule forces common Tailwind gray text classes to use the theme's dynamic text color. */
-/* The !important is necessary here to override Tailwind's default light-mode utility classes, */
-/* ensuring the text is readable on the dark cards. */
-.text-gray-800, 
-.text-gray-700, 
-.text-gray-600, 
-.text-gray-500 { 
-    color: var(--text-color) !important; 
-} 
+/* IMPORTANT: This rule was intended to make Tailwind's bg-white dynamic. 
+   We are including it because it was in your original code. */
+.bg-white { background-color: var(--card-bg) !important;
+}
+.border-gray-100, .border-gray-200 { border-color: var(--border-color);
+}
+
+/* FIX: This rule uses !important to override Tailwind's default light-mode classes 
+   (e.g., text-gray-800), ensuring text is always readable in dark mode. */
+.text-gray-800, .text-gray-700, .text-gray-600, .text-gray-500 { color: var(--text-color) !important;
+}
 
 /* Input Colors */
 input, select {
@@ -75,13 +76,16 @@ input, select {
     border-bottom: 1px solid var(--accent); 
     overflow: hidden; 
     font-size: 14px; 
-    /* The text color for the line content will be handled by the .text-gray-X override above */
     transition: border-color 0.3s;
 }
-.line span { float: right; font-weight: bold; }
-.line.thick { border-bottom-width: 3px; }
-.line.no-border { border-bottom: none; }
-.line.indent { margin-left: 15px; }
+.line span { float: right; font-weight: bold;
+}
+.line.thick { border-bottom-width: 3px;
+}
+.line.no-border { border-bottom: none;
+}
+.line.indent { margin-left: 15px;
+}
 
 /* Custom Styles for Buttons */
 .calc-btn, .share-btn, .add-btn, .copy-ingredients-btn { 
