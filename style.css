@@ -4,18 +4,18 @@
 /* Default (Light) Theme */
 :root {
     --primary: #0a7c36;
-    --background: #f4f7f8; /* Light gray */
+    --background: #f4f7f8;
     --text-color: #222;
-    --card-bg: white; /* White */
+    --card-bg: white;
     --border-color: #e5e7eb;
     --accent: #222;
 }
 
 /* Dark Theme */
 .dark {
-    --background: #1f2937; /* Dark blue/gray */
+    --background: #1f2937;
     --text-color: #f3f4f6;
-    --card-bg: #1f2937; /* <--- Change: Card background now matches body background */
+    --card-bg: #374151; /* Reverted to the original dark card color */
     --border-color: #4b5563;
     --accent: #f3f4f6;
 }
@@ -23,7 +23,7 @@
 /* --- Global Styles using Variables --- */
 body { 
     font-family: 'Inter', sans-serif;
-    background: var(--background); /* Body background uses variable [cite: 189] */
+    background: var(--background);
     color: var(--text-color);
     min-height: 100vh;
     display: flex;
@@ -31,17 +31,29 @@ body {
     transition: background-color 0.3s;
 }
 
-header { background: var(--card-bg); } /* Header uses card background variable [cite: 190] */
+header { 
+    background: var(--card-bg); 
+}
 
-/* REMOVE THIS PROBLEMATIC RULE. We will rely on HTML cleanup. */
-/* .bg-white { background-color: var(--card-bg) !important; } */
+/* This rule forces bg-white elements to use the card background variable */
+.bg-white { 
+    background-color: var(--card-bg) !important; 
+}
 
-.border-gray-100, .border-gray-200 { border-color: var(--border-color); }
+.border-gray-100, .border-gray-200 { 
+    border-color: var(--border-color); 
+}
 
-/* Ensure text colors follow the theme variable (needed for titles/text inside cards) [cite: 193, 194] */
-.text-gray-800, .text-gray-700, .text-gray-600, .text-gray-500 { color: var(--text-color) !important; } 
+/* FIX: This rule uses !important to override Tailwind's default light-mode text colors, 
+   ensuring the text remains readable on dark card backgrounds. */
+.text-gray-800, 
+.text-gray-700, 
+.text-gray-600, 
+.text-gray-500 { 
+    color: var(--text-color) !important; 
+}
 
-/* Input Colors [cite: 195] */
+/* Input Colors */
 input, select {
     background-color: var(--background);
     color: var(--text-color);
@@ -49,7 +61,7 @@ input, select {
     transition: background-color 0.3s, border-color 0.3s;
 }
 
-/* Custom Nutrition Label Styling [cite: 196, 197] */
+/* Custom Nutrition Label Styling */
 .nutrition-label {
     width: 100%;
     border: 2px solid var(--accent);
@@ -78,7 +90,7 @@ input, select {
 .line.no-border { border-bottom: none; }
 .line.indent { margin-left: 15px; }
 
-/* Custom Styles for Buttons [cite: 206] */
+/* Custom Styles for Buttons */
 .calc-btn, .share-btn, .add-btn, .copy-ingredients-btn { 
     background-color: var(--primary);
     color: white; 
@@ -96,7 +108,7 @@ input, select {
     background-color: #b91c1c;
 }
 
-/* --- Theme Toggle Button [cite: 210] --- */
+/* --- Theme Toggle Button --- */
 .theme-toggle-btn {
     position: fixed;
     bottom: 20px;
@@ -117,7 +129,7 @@ input, select {
     transform: scale(0.95);
 }
 
-/* Section styles [cite: 214] */
+/* Section styles */
 .info-section {
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
