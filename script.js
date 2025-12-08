@@ -6,6 +6,20 @@ const WEBSITE_TITLE = "NutriFind Recipe Calculator";
 window.lastCalculatedTotals = null;
 let macroChartInstance = null;
 
+// --- TOAST NOTIFICATION LOGIC ---
+function showToast(message) {
+    const toast = document.getElementById('toastNotification');
+    toast.textContent = message;
+    toast.style.opacity = '1';
+    toast.style.bottom = '30px';
+
+    // Hide after 3 seconds
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.bottom = '0px'; // Move off screen slightly
+    }, 3000);
+}
+
 // --- THEME TOGGLE LOGIC ---
 function initializeTheme() {
     const savedTheme = localStorage.getItem('theme');
@@ -13,9 +27,9 @@ function initializeTheme() {
     const themeToggle = document.getElementById('themeToggle');
     if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
         document.body.classList.add('dark');
-        themeToggle.textContent = '🌙';
+        if (themeToggle) themeToggle.textContent = '🌙';
     } else {
-        themeToggle.textContent = '☀️';
+        if (themeToggle) themeToggle.textContent = '☀️';
     }
 }
 
@@ -26,11 +40,11 @@ function toggleTheme() {
     if (body.classList.contains('dark')) {
         body.classList.remove('dark');
         localStorage.setItem('theme', 'light');
-        themeToggle.textContent = '☀️';
+        if (themeToggle) themeToggle.textContent = '☀️';
     } else {
         body.classList.add('dark');
         localStorage.setItem('theme', 'dark');
-        themeToggle.textContent = '🌙';
+        if (themeToggle) themeToggle.textContent = '🌙';
     }
 }
 
@@ -39,9 +53,9 @@ function ingredientRowHTML() {
     return `
     <div class="ingredient-row flex gap-2 mb-2">
         <input type="text" class="query w-full p-2 border border-gray-300 rounded-lg text-sm" 
-               placeholder="e.g., 100g chicken breast or 2 liters water" 
+        placeholder="e.g., 100g chicken breast or 2 liters water" 
                value="" />
-        <button class="bg-red-500 text-white rounded-lg p-2 text-sm hover:bg-red-600 w-10 flex-shrink-0 delete-btn" 
+        <button class="bg-red-500 text-white rounded-lg p-2 text-sm hover:bg-red-600 w-10 flex-shrink-0" 
                 onclick="this.parentElement.remove()">✕</button>
     </div>`;
 }
@@ -51,13 +65,16 @@ function addIngredient() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('ingredientsContainer').children.length === 0) {
+    // Check for ingredientsContainer before calling .children to avoid errors on other pages
+    if (document.getElementById('ingredientsContainer') && document.getElementById('ingredientsContainer').children.length === 0) {
          document.getElementById('ingredientsContainer').insertAdjacentHTML('beforeend', ingredientRowHTML());
     }
     initializeTheme();
-    convertUnit(); 
-    loadSavedRecipes(); 
+    // These functions must be called on load to set initial state
+    if (document.getElementById('conversionResult')) convertUnit(); 
+    if (document.getElementById('savedRecipesList')) loadSavedRecipes(); 
 });
+
 
 // --- API & CALCULATION LOGIC ---
 async function getNutrition(query) {
@@ -196,7 +213,7 @@ function updateMacroChart(totals) {
                             }
                             return [];
                         }
-                    }
+                    },
                 },
                 title: {
                     display: true,
@@ -220,6 +237,23 @@ function updateMacroChart(totals) {
     });
 }
 
+// --- SAVED RECIPE INGREDIENT COPY/VIEW ---
+function copyRecipeIngredients(name, ingredientsText) {
+    try {
+        const textToCopy = `--- ${name} Ingredients ---\n` + ingredientsText.replace(/\\n/g, '\n');
+        const textarea = document.createElement('textarea');
+        textarea.value = textToCopy;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showToast(`Ingredients for "${name}" copied to clipboard!`);
+    } catch (err) {
+        showToast(`Error copying ingredients for "${name}".`);
+        console.error('Could not copy recipe ingredients: ', err);
+    }
+}
+
 // --- RECIPE SAVING & LOADING LOGIC ---
 function saveRecipe() {
     let savedRecipes = JSON.parse(localStorage.getItem('nutrifind_recipes') || '[]');
@@ -227,7 +261,7 @@ function saveRecipe() {
                                        .map(input => input.value.trim())
                                        .filter(val => val.length > 0);
     if (currentIngredients.length === 0 || !window.lastCalculatedTotals) {
-        alert("Please calculate the recipe nutrition before saving.");
+        showToast("Please calculate the recipe nutrition before saving.");
         return;
     }
 
@@ -248,7 +282,7 @@ function saveRecipe() {
     savedRecipes.unshift(newRecipe); 
     localStorage.setItem('nutrifind_recipes', JSON.stringify(savedRecipes));
 
-    alert(`Recipe "${newRecipe.name}" saved successfully!`);
+    showToast(`Recipe "${newRecipe.name}" saved successfully!`);
     renderSavedRecipes(savedRecipes);
 }
 
@@ -285,7 +319,7 @@ function renderSavedRecipes(recipes) {
                     </p>
                 </div>
                 <div class="flex gap-2 mt-3 sm:mt-0">
-                    <button class="share-btn py-1 px-3 text-sm font-medium rounded-lg" onclick="alert('Viewing ingredients:\\n${recipe.ingredients.join('\\n')}')">View</button>
+                    <button class="share-btn py-1 px-3 text-sm font-medium rounded-lg" onclick="copyRecipeIngredients('${recipe.name.replace(/'/g, "\\'")}', \`${recipe.ingredients.join('\\n')}\`)">Copy Ingredients</button>
                     <button class="delete-btn py-1 px-3 text-sm font-medium rounded-lg" onclick="deleteRecipe(${recipe.id})">Delete</button>
                 </div>
             </div>
@@ -299,7 +333,7 @@ function deleteRecipe(id) {
     savedRecipes = savedRecipes.filter(recipe => recipe.id !== id);
     localStorage.setItem('nutrifind_recipes', JSON.stringify(savedRecipes));
     renderSavedRecipes(savedRecipes); 
-    alert('Recipe deleted successfully.');
+    showToast('Recipe deleted successfully.');
 }
 
 
@@ -383,17 +417,17 @@ function copyTable() {
     }
 }
 
-// --- UTILITY: Share Table (CONFIRMED WORKING VERSION) ---
+// --- UTILITY: Share Table (FINAL STABLE: TEXT-ONLY, ENGAGING CTA) ---
 async function shareTable() { 
     if (!window.lastCalculatedTotals) {
-        alert("Please calculate the recipe nutrition before sharing.");
+        showToast("Please calculate the recipe nutrition before sharing.");
         return;
     }
     
     const t = window.lastCalculatedTotals;
     
-    // 1. Generate the clean, templated text. 
-    // This structure is confirmed to work without causing URL duplication on your system.
+    // 1. Generate the clean, templated text.
+    // The explicit URL is excluded from the text body to prevent duplication.
     const shareBody = `Check out my recipe nutrition facts from ${WEBSITE_TITLE}.\n\n` +
                       `*Calories - ${Math.round(t.cal)}*\n` +
                       `Total Fat - ${t.fat.toFixed(1)} g\n` +
@@ -403,7 +437,7 @@ async function shareTable() {
                       `Dietary Fiber - ${t.fiber.toFixed(1)} g\n` +
                       `Total Sugars - ${t.sugar.toFixed(1)} g\n` +
                       `Protein - ${t.protein.toFixed(1)} g\n\n` + 
-                      `Get started on your own recipes! `; // Space added at the end for clean formatting.
+                      `Get started on your own recipes!`; 
 
     if (navigator.share) { 
         try {
