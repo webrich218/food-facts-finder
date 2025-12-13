@@ -6,7 +6,7 @@
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥗</text></svg>">
     
-    <title>Recipes | Banana Brownies - NutriFind</title>
+    <title>Recipes | NutriFind</title>
     <meta name="description" content="Discover sample recipes with full nutrition facts, calculated by the NutriFind tool. View the recipe for healthy Banana Brownies." />
     <meta name="author" content="NutriFind" />
     
@@ -131,7 +131,7 @@
                 </div>
                 
                 <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4">
-                    <p class="text-lg font-bold text-gray-800">Yields: 4 Servings (1 Slice per Serving)</p>
+                    <p class="text-lg font-bold text-gray-800">Yields: 4 Servings</p>
                     
                     <button id="shareRecipeBtn" class="share-btn py-2 px-4 font-medium rounded-lg text-sm flex items-center justify-center" onclick="shareRecipeLink()">
                         🔗 Share This Recipe
@@ -171,14 +171,14 @@
                         <div class="nutrition-label max-w-sm">
                             <h3 class="label-header">Total Facts</h3>
                             <div id="recipeNutritionTotal">
-                                <div class="line thick font-bold text-base">Calories <span>1140</span></div>
-                                <div class="line thick font-bold text-base">Total Fat <span>68.0 g</span></div>
-                                <div class="line indent">Saturated Fat <span>18.0 g</span></div>
-                                <div class="line thick font-bold text-base">Sodium <span>250 mg</span></div>
-                                <div class="line thick font-bold text-base">Total Carb <span>117.0 g</span></div>
-                                <div class="line indent">Dietary Fiber <span>14.0 g</span></div>
-                                <div class="line indent">Total Sugars <span>65.0 g</span></div>
-                                <div class="line thick font-bold text-base no-border">Protein <span>37.0 g</span></div>
+                                <div class="line thick font-bold text-base">Calories <span>754</span></div>
+                                <div class="line thick font-bold text-base">Total Fat <span>23.1 g</span></div>
+                                <div class="line indent">Saturated Fat <span>4.5 g</span></div>
+                                <div class="line thick font-bold text-base">Sodium <span>252 mg</span></div>
+                                <div class="line thick font-bold text-base">Total Carb <span>51.0 g</span></div>
+                                <div class="line indent">Dietary Fiber <span>2.9 g</span></div>
+                                <div class="line indent">Total Sugars <span>41.7 g</span></div>
+                                <div class="line thick font-bold text-base no-border">Protein <span>87.3 g</span></div>
                             </div>
                         </div>
                     </div>
@@ -188,14 +188,14 @@
                          <div class="nutrition-label max-w-sm">
                             <h3 class="label-header">Per Serving</h3>
                             <div id="recipeNutritionServing">
-                                <div class="line thick font-bold text-base">Calories <span>143</span></div>
-                                <div class="line thick font-bold text-base">Total Fat <span>8.5 g</span></div>
-                                <div class="line indent">Saturated Fat <span>2.3 g</span></div>
-                                <div class="line thick font-bold text-base">Sodium <span>31 mg</span></div>
-                                <div class="line thick font-bold text-base">Total Carb <span>14.6 g</span></div>
-                                <div class="line indent">Dietary Fiber <span>1.8 g</span></div>
-                                <div class="line indent">Total Sugars <span>8.1 g</span></div>
-                                <div class="line thick font-bold text-base no-border">Protein <span>4.6 g</span></div>
+                                <div class="line thick font-bold text-base">Calories <span>189</span></div>
+                                <div class="line thick font-bold text-base">Total Fat <span>5.8 g</span></div>
+                                <div class="line indent">Saturated Fat <span>1.2 g</span></div>
+                                <div class="line thick font-bold text-base">Sodium <span>63 mg</span></div>
+                                <div class="line thick font-bold text-base">Total Carb <span>12.8 g</span></div>
+                                <div class="line indent">Dietary Fiber <span>0.8 g</span></div>
+                                <div class="line indent">Total Sugars <span>10.4 g</span></div>
+                                <div class="line thick font-bold text-base no-border">Protein <span>21.8 g</span></div>
                             </div>
                         </div>
                     </div>
@@ -226,8 +226,8 @@
         // Function to handle sharing the link to this specific recipe page
         function shareRecipeLink() {
             const url = window.location.href;
-            const title = "Check out this Banana Brownies recipe from NutriFind!";
-            const text = "I found the nutrition facts for these amazing brownies using NutriFind's calculator. Try it!";
+            const title = "Check out this recipe from NutriFind!";
+            const text = "I found the nutrition facts for these amazing recipes using NutriFind's calculator. Try it!";
 
             if (navigator.share) {
                 navigator.share({
@@ -238,7 +238,7 @@
             } else {
                 // Fallback for browsers that don't support the Web Share API (e.g., desktop)
                 navigator.clipboard.writeText(url);
-                alert("Link copied to clipboard! Share the Banana Brownies recipe: " + url);
+                alert("Link copied to clipboard! Share the recipe: " + url);
             }
         }
 
