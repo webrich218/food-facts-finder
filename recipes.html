@@ -119,6 +119,92 @@
                     *Nutrition calculated by NutriFind based on ingredients and is an estimate for 8 servings.*
                 </p>
             </div>
+
+            <div class="border p-4 rounded-lg bg-gray-100 dark:bg-green-700 border-gray-200 dark:border-green-700 text-gray-700"style="background: var(--card-bg);">
+                
+                <h3 class="text-2xl font-bold text-green-700 dark:text-green-400 mb-4">High-Protein Greek Yogurt Chicken Salad</h3>
+                
+                <div class="mb-6 rounded-lg overflow-hidden shadow-md">
+                    <img src="" 
+                         alt="High-Protein Greek Yogurt Chicken Salad" 
+                         class="w-full h-auto object-cover">
+                </div>
+                
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4">
+                    <p class="text-lg font-bold text-gray-800">Yields: 8 Servings (1 Slice per Serving)</p>
+                    
+                    <button id="shareRecipeBtn" class="share-btn py-2 px-4 font-medium rounded-lg text-sm flex items-center justify-center" onclick="shareRecipeLink()">
+                        🔗 Share This Recipe
+                    </button>
+                </div>
+
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <h4 class="text-xl font-semibold mb-2 text-gray-700 dark:text-gray-200">Ingredients (Total Recipe)</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-600 dark:text-gray-800 space-y-1 ml-4">
+                            <li>2 cups cooked chicken breast, shredded</li>
+                            <li>½ cup Greek yogurt (low-fat or full-fat)</li>
+                            <li>1 tbsp olive oil</li>
+                            <li>1 tbsp lemon juice</li>
+                            <li>1 celery stalk, chopped</li>
+                            <li>¼ cup red onion, finely diced</li>
+                            <li>¼ cup grapes or apple, chopped (optional)</li>
+                            <li>Salt & pepper to taste</li>
+                            <li>1 tsp honey or stevia (optional)</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-xl font-semibold mb-2 text-gray-700 dark:text-gray-800">Instructions</h4>
+                        <ol class="list-decimal list-inside text-sm text-gray-600 dark:text-gray-800 space-y-1 ml-4">
+                            <li>In a large bowl, mix Greek yogurt, olive oil, and lemon juice.</li>
+                            <li>Add shredded chicken, celery, onion, and grapes.</li>
+                            <li>Mix until everything is evenly coated.</li>
+                            <li>Season with salt, pepper, and honey (optional).</li>
+                            <li>Chill for 30 minutes before serving.</li>
+                        </ol>
+                    </div>
+
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-700 dark:text-gray-800">Total Recipe Nutrition</h4>
+                        <div class="nutrition-label max-w-sm">
+                            <h3 class="label-header">Total Facts</h3>
+                            <div id="recipeNutritionTotal">
+                                <div class="line thick font-bold text-base">Calories <span>1140</span></div>
+                                <div class="line thick font-bold text-base">Total Fat <span>68.0 g</span></div>
+                                <div class="line indent">Saturated Fat <span>18.0 g</span></div>
+                                <div class="line thick font-bold text-base">Sodium <span>250 mg</span></div>
+                                <div class="line thick font-bold text-base">Total Carb <span>117.0 g</span></div>
+                                <div class="line indent">Dietary Fiber <span>14.0 g</span></div>
+                                <div class="line indent">Total Sugars <span>65.0 g</span></div>
+                                <div class="line thick font-bold text-base no-border">Protein <span>37.0 g</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-xl font-semibold mb-3 text-gray-700 dark:text-gray-800">Per Serving (1 Slice)</h4>
+                         <div class="nutrition-label max-w-sm">
+                            <h3 class="label-header">Per Serving</h3>
+                            <div id="recipeNutritionServing">
+                                <div class="line thick font-bold text-base">Calories <span>143</span></div>
+                                <div class="line thick font-bold text-base">Total Fat <span>8.5 g</span></div>
+                                <div class="line indent">Saturated Fat <span>2.3 g</span></div>
+                                <div class="line thick font-bold text-base">Sodium <span>31 mg</span></div>
+                                <div class="line thick font-bold text-base">Total Carb <span>14.6 g</span></div>
+                                <div class="line indent">Dietary Fiber <span>1.8 g</span></div>
+                                <div class="line indent">Total Sugars <span>8.1 g</span></div>
+                                <div class="line thick font-bold text-base no-border">Protein <span>4.6 g</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-4">
+                    *Nutrition calculated by NutriFind based on ingredients and is an estimate for 8 servings.*
+                </p>
+            </div>
             <div class="mt-8 p-4 border-t pt-6 border-gray-200 dark:border-gray-600">
                 <h3 class="text-xl font-semibold mb-3 text-gray-700 dark:text-gray-200">More Recipes Coming Soon!</h3>
                 <p class="text-sm text-gray-600 dark:text-gray-300">
